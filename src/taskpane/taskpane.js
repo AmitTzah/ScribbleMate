@@ -5,6 +5,8 @@
 
 /* global document, Office, Word */
 
+const { generateContinuation } = require("./gpt3/gpt3.js");
+
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
     document.getElementById("sideload-msg").style.display = "none";
@@ -19,12 +21,20 @@ export async function run() {
      * Insert your Word code here
      */
 
-    // insert a paragraph at the end of the document.
-    const paragraph = context.document.body.insertParagraph("Hello World", Word.InsertLocation.end);
+    // Get the selected text
+    const selection = context.document.getSelection();
+    selection.load("text");
+    await context.sync();
 
-    // change the paragraph color to blue.
-    paragraph.font.color = "blue";
+    // Send the selected text to the GPT-3 API to generate a description
+    const prompt = selection.text;
+    const Continuation = await generateContinuation(prompt);
 
+    console.log("The generated continuation was: ");
+    console.log(Continuation);
+
+    // Insert the generated continuation into the Word document
+    selection.insertText(Continuation.data.choices[0].message.content, Word.InsertLocation.end);
     await context.sync();
   });
 }

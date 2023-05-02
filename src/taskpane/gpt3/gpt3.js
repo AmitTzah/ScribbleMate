@@ -1,7 +1,11 @@
 const { Configuration, OpenAIApi } = require("openai");
+const { api_key } = require("./../../../api_key.js");
+
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: api_key,
 });
+
+delete configuration.baseOptions.headers["User-Agent"];
 
 const openai = new OpenAIApi(configuration);
 
@@ -11,7 +15,7 @@ async function generateContinuation(prompt) {
     max_tokens: 75,
     temperature: 0.8,
     top_p: 1,
-    n: 3,
+    n: 1,
     stop: ["\n"],
     presence_penalty: 0.5,
     frequency_penalty: 0.5,
