@@ -9,16 +9,38 @@ delete configuration.baseOptions.headers["User-Agent"];
 
 const openai = new OpenAIApi(configuration);
 
-async function generateContinuation(prompt) {
+function getContinuationsContent(response, n) {
+  //the array of continuations to be returned
+
+  const continuations = [];
+  for (let i = 0; i < n; i++) {
+    continuations.push(response.data.choices[i].message.content);
+  }
+  return continuations;
+}
+
+async function generateContinuations(
+  prompt,
+  n = 1,
+  temperature = 0.8,
+  top_p = 1,
+  presence_penalty = 0.5,
+  frequency_penalty = 0.5,
+  stop = ["\n"],
+  model = "gpt-3.5-turbo",
+  max_tokens = 75
+) {
+  //this function generates n continuations of the prompt using the GPT-3 API
+
   const requestBody = {
-    model: "gpt-3.5-turbo",
-    max_tokens: 75,
-    temperature: 0.8,
-    top_p: 1,
-    n: 1,
-    stop: ["\n"],
-    presence_penalty: 0.5,
-    frequency_penalty: 0.5,
+    model: model,
+    max_tokens: max_tokens,
+    temperature: temperature,
+    top_p: top_p,
+    n: n,
+    stop: stop,
+    presence_penalty: presence_penalty,
+    frequency_penalty: frequency_penalty,
     messages: [
       {
         role: "system",
@@ -33,9 +55,13 @@ async function generateContinuation(prompt) {
   };
 
   const response = await openai.createChatCompletion(requestBody);
-  return response;
+
+  console.log("The response was: ");
+  console.log(response);
+
+  return getContinuationsContent(response, n);
 }
 
 module.exports = {
-  generateContinuation,
+  generateContinuations,
 };
