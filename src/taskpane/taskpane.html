@@ -12,41 +12,53 @@
     <!-- Office JavaScript API -->
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
 
-    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link
-      rel="stylesheet"
-      href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
 
-    <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
   </head>
 
-  <body class="ms-font-m ms-welcome ms-Fabric">
-    <header class="ms-welcome__header ms-bgColor-neutralLighter">
-      <img width="90" height="90" src="../../assets/logo-filled.png" alt="Contoso" title="Contoso" />
-      <h1 class="ms-font-su">Writing Wizard</h1>
-    </header>
-    <section id="load-window" class="ms-welcome__main">
-      <h2 class="ms-font-xl">Loading...</h2>
-    </section>
-    <main id="app-body" class="ms-welcome__main" style="display: none">
-      <h2 class="ms-font-xl" style="text-align: left">Boost your writing with an AI sidekick!</h2>
-      <ul class="ms-List ms-welcome__features">
-        <li class="ms-ListItem">
-          <i class="ms-Icon ms-Icon--Lightbulb"></i>
-          <span class="ms-font-m">
-            Our model suggests captivating continuations that enhance your ideas while staying true to your vision.
-          </span>
-        </li>
-      </ul>
-      <p class="ms-font-l">
-        Provide your <a href="https://platform.openai.com/account/api-keys">OpenAI API key</a> to get started:
-      </p>
+  <body>
+    <div id="login-section">
+      <section class="hero is-info is-medium">
+        <div class="hero-body">
+          <p class="title">WordsmithBot</p>
+          <p class="subtitle">Your AI Writing Assistant</p>
+        </div>
+      </section>
 
-      <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
-        <span class="ms-Button-label">Run</span>
-      </div>
-    </main>
+      <section class="section has-background-grey-lighter">
+        <h1 class="title has-text-grey-dark">Credentials</h1>
+        <h2 class="subtitle">
+          Enter your <a href="https://platform.openai.com/account/api-keys">OpenAI API key</a> to get started:
+        </h2>
+        <input class="input" type="text" placeholder="Enter your API key" />
+
+        <div class="content mt-5 has-text-weight-light">
+          <p>
+            Please note that this application uses a BYOK (Bring Your Own Key) model, which means that you will need to
+            provide your own API key in order to access the OpenAI API.
+          </p>
+
+          <p class="mt-0">
+            The cost of using the GPT-3.5 model is currently $0.002 per 750 words, which means that on a typical writing
+            session that uses 100 generations, each with a modest context window of 500 words, you should expect to pay
+            around $0.20. However, the actual cost may vary depending on the specific usage and the amount of data
+            processed.
+          </p>
+
+          <p class="mt-0 has-text-weight-bold">
+            Please monitor your usage and costs through your OpenAI account dashboard, and set up alerts to notify you
+            when certain usage or cost thresholds are reached.
+          </p>
+
+          <p class="mt-0">
+            For more information about the pricing model, please refer to the
+            <a href="https://openai.com/blog/openai-api/">OpenAI API documentation</a>.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <main id="app-body" style="display: none"></main>
   </body>
 </html>

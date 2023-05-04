@@ -29,8 +29,6 @@ async function suggestText() {
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    document.getElementById("load-window").style.display = "none";
-    document.getElementById("app-body").style.display = "flex";
-    document.getElementById("run").onclick = suggestText;
+    //document.getElementById("run").onclick = suggestText;
   }
 });
