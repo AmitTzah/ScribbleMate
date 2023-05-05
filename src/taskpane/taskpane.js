@@ -86,6 +86,12 @@ async function validateAndSaveApiKey(api_key) {
     icon.appendChild(icon2);
 
     document.getElementById("api-key").insertAdjacentElement("afterend", icon);
+
+    //set the display of the "login-screen" to none
+    //Remove the display:none from the "main-screen"
+
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main-screen").style.display = "block";
   }
 }
 
