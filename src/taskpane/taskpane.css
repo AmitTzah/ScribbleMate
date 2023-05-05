@@ -11,3 +11,22 @@
      padding: 0;
  }
  
+ .icon-alert-triangle {
+    display: inline-block;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-image: url('./../../assets/alert-triangle.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .icon-check {
+    display: inline-block;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-image: url('./../../assets/check.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
