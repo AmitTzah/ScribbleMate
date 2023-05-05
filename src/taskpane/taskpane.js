@@ -95,6 +95,22 @@ async function validateAndSaveApiKey(api_key) {
   }
 }
 
+// Function to update the textarea with the selected text
+function updateSelectedText() {
+  Office.context.document.getSelectedDataAsync(Office.CoercionType.Text, function (result) {
+    if (result.status === Office.AsyncResultStatus.Succeeded) {
+      const selectedText = result.value;
+
+      // if the selected text is empty then do nothing
+      if (selectedText === "") {
+        return;
+      }
+      const textarea = document.getElementById("inputTextArea");
+      textarea.value = selectedText;
+    }
+  });
+}
+
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
     //define a global variable for the api key
@@ -104,5 +120,8 @@ Office.onReady((info) => {
     document.getElementById("api-key-button").addEventListener("click", function () {
       validateAndSaveApiKey(api_key);
     });
+
+    // Add event handler for selection change
+    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, updateSelectedText);
   }
 });
