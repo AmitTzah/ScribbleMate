@@ -27,12 +27,9 @@ async function suggestText() {
   });
 }
 
-async function loadGPT3(api_key) {
+async function validateAndSaveApiKey(api_key) {
   // Get the API key from the input box
   api_key.value = document.getElementById("api-key").value;
-
-  console.log("The API key is: ");
-  console.log(api_key.value);
 
   //remove the error icon if it exists
   const icon = document.querySelector(".icon-alert-triangle");
@@ -46,14 +43,21 @@ async function loadGPT3(api_key) {
     icon2.remove();
   }
 
+  //remove the error message if it exists
+  const error = document.getElementById("api-input-error-message");
+  if (error) {
+    error.remove();
+  }
+
   //to the control-api-input element, add the class is-loading
   document.getElementById("control-api-input").classList.add("is-loading");
 
   // Check if the API key is valid
   const valid = await checkApiKey(api_key.value);
 
-  //if not valid (false)
   if (!valid) {
+    //remove the is-loading class from the control-api-input element
+    document.getElementById("control-api-input").classList.remove("is-loading");
     //add an error icon to the api-key input box
     const icon = document.createElement("span");
     icon.className = "icon is-small is-right";
@@ -61,22 +65,25 @@ async function loadGPT3(api_key) {
     icon2.className = "icon-alert-triangle";
     icon.appendChild(icon2);
 
+    document.getElementById("api-key").insertAdjacentElement("afterend", icon);
+
+    //add an error message to the api-key input box
+    const error = document.createElement("p");
+    error.id = "api-input-error-message";
+    error.className = "help is-danger";
+    error.innerText = "This API key is invalid";
+
+    document.getElementById("api-input-field").insertAdjacentElement("afterend", error);
+  } else {
     //remove the is-loading class from the control-api-input element
     document.getElementById("control-api-input").classList.remove("is-loading");
 
-    document.getElementById("api-key").insertAdjacentElement("afterend", icon);
-
-    //if valid (true)
-  } else {
     //add a check icon to the api-key input box
     const icon = document.createElement("span");
     icon.className = "icon is-small is-right";
     const icon2 = document.createElement("span");
     icon2.className = "icon-check";
     icon.appendChild(icon2);
-
-    //remove the is-loading class from the control-api-input element
-    document.getElementById("control-api-input").classList.remove("is-loading");
 
     document.getElementById("api-key").insertAdjacentElement("afterend", icon);
   }
@@ -89,7 +96,7 @@ Office.onReady((info) => {
 
     //set an event listener for the api-button
     document.getElementById("api-key-button").addEventListener("click", function () {
-      loadGPT3(api_key);
+      validateAndSaveApiKey(api_key);
     });
   }
 });
