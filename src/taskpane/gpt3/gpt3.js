@@ -1,13 +1,4 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { api_key } = require("./../../../api_key.js");
-
-const configuration = new Configuration({
-  apiKey: api_key,
-});
-
-delete configuration.baseOptions.headers["User-Agent"];
-
-const openai = new OpenAIApi(configuration);
 
 function getContinuationsContent(response, n) {
   //the array of continuations to be returned
@@ -20,6 +11,7 @@ function getContinuationsContent(response, n) {
 }
 
 async function generateContinuations(
+  api_key,
   prompt,
   n = 1,
   temperature = 0.8,
@@ -31,6 +23,13 @@ async function generateContinuations(
   max_tokens = 75
 ) {
   //this function generates n continuations of the prompt using the GPT-3 API
+
+  const configuration = new Configuration({
+    apiKey: api_key,
+  });
+  delete configuration.baseOptions.headers["User-Agent"];
+
+  const openai = new OpenAIApi(configuration);
 
   const requestBody = {
     model: model,
@@ -62,6 +61,32 @@ async function generateContinuations(
   return getContinuationsContent(response, n);
 }
 
+async function checkApiKey(api_Key) {
+  //this function checks if the API key is valid
+  //returns true if the API key is valid, false otherwise
+
+  const configuration = new Configuration({
+    apiKey: api_Key,
+  });
+  delete configuration.baseOptions.headers["User-Agent"];
+
+  const openai = new OpenAIApi(configuration);
+  try {
+    const response = await openai.createCompletion({
+      model: "ada",
+      prompt: "t",
+      temperature: 0,
+      max_tokens: 1,
+    });
+    console.log(response);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 module.exports = {
   generateContinuations,
+  checkApiKey,
 };
