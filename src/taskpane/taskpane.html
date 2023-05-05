@@ -67,6 +67,33 @@
       </section>
     </div>
 
-    <div id="main-screen" style="display: none"></div>
+    <div id="main-screen" style="display: none" class="has-background-white-ter">
+      <section id="selection-textbox" class="section pb-0">
+        <h1 class="title">Context input</h1>
+        <textarea
+          class="textarea is-large is-size-5"
+          placeholder="WordsmithBot generates continuations based on your input. To get started, either select the text you want to use as context or copy and paste something into this field. Then, click the 'Suggest Text' button to see the generated continuations.."
+        ></textarea>
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <button class="button is-info mt-4">Sugggest Text</button>
+          </div>
+        </nav>
+      </section>
+
+      <section id="generations" class="section mt-0">
+        <h2 class="title pb-1">Suggestions</h2>
+        <p class="subtitle">Option 1:</p>
+        <textarea id="option 1" class="textarea" readonly placeholder="The generations will appear here."></textarea>
+        <p class="subtitle mt-2">Option 2:</p>
+        <textarea id="option 2" class="textarea" readonly placeholder="The generations will appear here."></textarea>
+        <p class="subtitle mt-2">Option 3:</p>
+        <textarea id="option 3" class="textarea" readonly placeholder="The generations will appear here."></textarea>
+        <p class="subtitle mt-2">Option 4:</p>
+        <textarea id="option 4" class="textarea" readonly placeholder="The generations will appear here."></textarea>
+        <p class="subtitle mt-2">Option 5:</p>
+        <textarea id="option 5" class="textarea" readonly placeholder="The generations will appear here."></textarea>
+      </section>
+    </div>
   </body>
 </html>
