@@ -13,14 +13,14 @@ function getContinuationsContent(response, n) {
 async function generateContinuations(
   api_key,
   prompt,
-  n = 1,
+  n = 5,
   temperature = 0.8,
   top_p = 1,
   presence_penalty = 0.5,
   frequency_penalty = 0.5,
   stop = ["\n"],
   model = "gpt-3.5-turbo",
-  max_tokens = 75
+  max_tokens = 30
 ) {
   //this function generates n continuations of the prompt using the GPT-3 API
 

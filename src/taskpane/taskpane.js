@@ -7,24 +7,22 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText() {
-  return Word.run(async (context) => {
-    // Get the selected text
-    const selection = context.document.getSelection();
-    selection.load("text");
-    await context.sync();
+async function suggestText(api_key) {
+  // Get the selected text from the input textarea
+  //Send the selected text to the GPT-3 API to generate a description
+  //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
 
-    // Send the selected text to the GPT-3 API to generate a description
-    const prompt = selection.text;
-    const Continuations = await generateContinuations(prompt);
+  // Get the selected text from input textarea
+  const selectedText = document.getElementById("inputTextArea").value;
 
-    console.log("The generated continuation was: ");
-    console.log(Continuations[0]);
+  //Send the selected text to the GPT-3 API to generate a description
+  const continuations = await generateContinuations(api_key.value, selectedText);
 
-    // Insert the generated continuation into the Word document
-    selection.insertText(Continuations[0], Word.InsertLocation.end);
-    await context.sync();
-  });
+  //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
+  for (let i = 0; i < continuations.length; i++) {
+    console.log(`option ${i + 1}`);
+    document.getElementById(`option ${i + 1}`).value = continuations[i];
+  }
 }
 
 async function validateAndSaveApiKey(api_key) {
@@ -123,5 +121,10 @@ Office.onReady((info) => {
 
     // Add event handler for selection change
     Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, updateSelectedText);
+
+    //add an event listener for the suggest-button
+    document.getElementById("suggest-text-button").addEventListener("click", function () {
+      suggestText(api_key);
+    });
   }
 });
