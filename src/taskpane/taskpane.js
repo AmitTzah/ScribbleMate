@@ -7,7 +7,7 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText(api_key, numOptions = 5) {
+async function suggestText(api_key, numOptions = 2) {
   // Get the selected text from the input textarea
   //Send the selected text to the GPT-3 API to generate a description
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
@@ -20,6 +20,11 @@ async function suggestText(api_key, numOptions = 5) {
 
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
   for (let i = 0; i < numOptions; i++) {
+    //remove all the textareas above numOptions currently in the generations div
+    const generations = document.getElementById("generations");
+    while (generations.childElementCount > 2 * numOptions - 1) {
+      generations.removeChild(generations.lastChild);
+    }
 
     //if the textarea doesn't exist, create it
     if (!document.getElementById(`option ${i + 1}`)) {
@@ -111,37 +116,98 @@ async function validateAndSaveApiKey(api_key) {
 }
 
 // Function to update the textarea with the selected text
-function updateSelectedText() {
-  Office.context.document.getSelectedDataAsync(Office.CoercionType.Text, function (result) {
-    if (result.status === Office.AsyncResultStatus.Succeeded) {
-      const selectedText = result.value;
+async function updateSelectedText(currentRange) {
+  return Word.run(async (context) => {
+    // Get the selected text
+    const selection = context.document.getSelection();
+    selection.load("text");
+    await context.sync();
 
-      // if the selected text is empty then do nothing
-      if (selectedText === "") {
-        return;
-      }
-      const textarea = document.getElementById("inputTextArea");
-      textarea.value = selectedText;
+    const selectedText = selection.text;
+    // if the selected text is empty then do nothing
+    if (selectedText === "") {
+      return;
     }
+
+    if (currentRange.range !== null) {
+      currentRange.range.context.trackedObjects.remove(currentRange.range);
+      console.log("removed tracked object");
+      console.log(currentRange.range);
+    }
+
+    const textarea = document.getElementById("inputTextArea");
+    textarea.value = selectedText;
+
+    //also save the Range object of the selected text in the textarea as a property
+    context.trackedObjects.add(selection);
+    currentRange.range = selection;
+    console.log("added tracked object");
+    console.log(currentRange.range);
   });
+}
+
+//Function for hover over options
+function hoverOverOption(currentRange, event) {
+  //get the option that was hovered over
+  const option = event.target;
+
+  //check if option.value is empty
+  if (option.value === "") {
+    return;
+  }
+
+  return Word.run(currentRange.range, async (context) => {
+    //get the range of the selected text
+
+    range = currentRange.range;
+    range.load();
+    await context.sync();
+
+    //use the range property of the textarea to insert the option.value into the document
+    range.insertText(option.value, Word.InsertLocation.end);
+  });
+}
+
+//Function to initialize all the event listeners
+function initializeEventListeners(api_key, currentRange) {
+  //set an event listener for the api-button
+  document.getElementById("api-key-button").addEventListener("click", function () {
+    validateAndSaveApiKey(api_key);
+  });
+
+  // Add event handler for selection change
+  Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, function () {
+    updateSelectedText(currentRange);
+  });
+
+  //add an event listener for the suggest-button
+  document.getElementById("suggest-text-button").addEventListener("click", function () {
+    suggestText(api_key);
+  });
+
+  //add a hover event listener for every option in the generations div
+  //Iterate through the generations div and add a hover event listener to each option
+  const generations = document.getElementById("generations");
+  for (let i = 0; i < generations.childElementCount; i++) {
+    //check if the element is a textarea by checking if it has the class "textarea"
+    if (generations.children[i].classList.contains("textarea")) {
+      //add a hover event listener to the textarea
+      generations.children[i].addEventListener("mouseover", function (event) {
+        hoverOverOption(currentRange, event);
+      });
+    }
+  }
 }
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    //define a global variable for the api key
+    //Global variable for the api key
     let api_key = { value: "" };
 
-    //set an event listener for the api-button
-    document.getElementById("api-key-button").addEventListener("click", function () {
-      validateAndSaveApiKey(api_key);
-    });
+    // Global variable to store the range object of the the input text.
+    let currentRange = { range: null };
 
-    // Add event handler for selection change
-    Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, updateSelectedText);
-
-    //add an event listener for the suggest-button
-    document.getElementById("suggest-text-button").addEventListener("click", function () {
-      suggestText(api_key);
-    });
+    //initialize the event listeners
+    initializeEventListeners(api_key, currentRange);
   }
 });
