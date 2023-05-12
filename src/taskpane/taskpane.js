@@ -7,7 +7,7 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText(api_key) {
+async function suggestText(api_key, numOptions = 5) {
   // Get the selected text from the input textarea
   //Send the selected text to the GPT-3 API to generate a description
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
@@ -16,11 +16,28 @@ async function suggestText(api_key) {
   const selectedText = document.getElementById("inputTextArea").value;
 
   //Send the selected text to the GPT-3 API to generate a description
-  const continuations = await generateContinuations(api_key.value, selectedText);
+  const continuations = await generateContinuations(api_key.value, selectedText, numOptions);
 
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
-  for (let i = 0; i < continuations.length; i++) {
-    console.log(`option ${i + 1}`);
+  for (let i = 0; i < numOptions; i++) {
+
+    //if the textarea doesn't exist, create it
+    if (!document.getElementById(`option ${i + 1}`)) {
+      const textarea = document.createElement("textarea");
+      textarea.id = `option ${i + 1}`;
+      textarea.className = "textarea";
+      textarea.readOnly = true;
+      textarea.placeholder = "The generations will appear here.";
+
+      const subtitle = document.createElement("p");
+      subtitle.className = "subtitle mt-2";
+      subtitle.innerText = `Option ${i + 1}:`;
+
+      document.getElementById("generations").appendChild(subtitle);
+
+      document.getElementById("generations").appendChild(textarea);
+    }
+
     document.getElementById(`option ${i + 1}`).value = continuations[i];
   }
 }
