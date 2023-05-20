@@ -138,7 +138,6 @@ async function updateSelectedText(currentRange) {
     const textarea = document.getElementById("inputTextArea");
     textarea.value = selectedText;
 
-    //also save the Range object of the selected text in the textarea as a property
     context.trackedObjects.add(selection);
     currentRange.range = selection;
     console.log("added tracked object");
@@ -155,17 +154,54 @@ function hoverOverOption(currentRange, event) {
   if (option.value === "") {
     return;
   }
+  if (event.type === "mouseenter") {
+    console.log("Hover started");
 
-  return Word.run(currentRange.range, async (context) => {
-    //get the range of the selected text
+    return Word.run(currentRange.range, async (context) => {
+      //get the range of the selected text
 
-    range = currentRange.range;
-    range.load();
-    await context.sync();
+      range = currentRange.range;
+      range.load();
+      await context.sync();
 
-    //use the range property of the textarea to insert the option.value into the document
-    range.insertText(option.value, Word.InsertLocation.end);
-  });
+      //use the range property of the textarea to insert the option.value into the document
+      range.insertText(option.value, Word.InsertLocation.end);
+      range.load();
+      await context.sync();
+
+      //deselct the text
+      range.select("end");
+
+      console.log("rangeText after insertText");
+      console.log(range.text);
+    });
+  } else if (event.type === "mouseleave") {
+    console.log("Hover ended");
+    // Trigger your desired action or event when hovering ends
+
+    return Word.run(currentRange.range, async (context) => {
+      //get the range of the selected text
+
+      textToRemove = option.value;
+
+      range = currentRange.range;
+      range.load();
+      await context.sync();
+
+      //use search method to find the option.value in the range
+      var searchResults = range.search(textToRemove);
+
+      //load the search results
+      searchResults.load("items");
+
+      await context.sync();
+
+      //get the first search result
+      var searchResult = searchResults.items[0];
+      //remove the search result
+      searchResult.delete();
+    });
+  }
 }
 
 //Function to initialize all the event listeners
@@ -191,8 +227,13 @@ function initializeEventListeners(api_key, currentRange) {
   for (let i = 0; i < generations.childElementCount; i++) {
     //check if the element is a textarea by checking if it has the class "textarea"
     if (generations.children[i].classList.contains("textarea")) {
-      //add a hover event listener to the textarea
-      generations.children[i].addEventListener("mouseover", function (event) {
+      //add a two event listeners to the textarea, mouseenter and mouseleave
+
+      generations.children[i].addEventListener("mouseenter", function (event) {
+        hoverOverOption(currentRange, event);
+      });
+
+      generations.children[i].addEventListener("mouseleave", function (event) {
         hoverOverOption(currentRange, event);
       });
     }
