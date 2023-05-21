@@ -154,7 +154,10 @@ function hoverOverOption(currentRange, event) {
       range.select("end");
     });
   } else if (event.type === "mouseleave") {
-    // Trigger your desired action or event when hovering ends
+    //check if option is focused
+    if (option === document.activeElement) {
+      return;
+    }
 
     return Word.run(currentRange.range, async (context) => {
       //get the range of the selected text
