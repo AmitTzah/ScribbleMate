@@ -142,8 +142,8 @@ function hoverOverOption(currentRange, event) {
       range.load();
       await context.sync();
 
-      //remove trailing spaces from the range.text
-      range.text = range.text.trimEnd();
+      const trimmedText = range.text.trimEnd();
+      range.insertText(trimmedText, "Replace");
 
       //use the range property of the textarea to insert the option.value into the document
       range.insertText(" " + option.value, Word.InsertLocation.end);
