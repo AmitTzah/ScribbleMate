@@ -13,7 +13,14 @@ async function suggestText(api_key, numOptions) {
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
 
   // Get the selected text from input textarea
-  const selectedText = document.getElementById("inputTextArea").value;
+  let selectedText = document.getElementById("inputTextArea").value;
+
+  //check if selected text contains a /n character at the end
+  const lastChar = selectedText[selectedText.length - 1];
+  if (lastChar === "\n") {
+    //remove it
+    selectedText = selectedText.slice(0, -1);
+  }
 
   //Send the selected text to the GPT-3 API to generate a description
   const continuations = await generateContinuations(api_key.value, selectedText, numOptions.value);
