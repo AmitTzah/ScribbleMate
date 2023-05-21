@@ -20,7 +20,7 @@ async function generateContinuations(
   frequency_penalty = 0.5,
   stop = ["\n"],
   model = "gpt-3.5-turbo",
-  max_tokens = 50
+  max_tokens = 60
 ) {
   //this function generates n continuations of the prompt using the GPT-3 API
 
