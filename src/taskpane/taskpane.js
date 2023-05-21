@@ -142,8 +142,11 @@ function hoverOverOption(currentRange, event) {
       range.load();
       await context.sync();
 
+      //remove trailing spaces from the range.text
+      range.text = range.text.trimEnd();
+
       //use the range property of the textarea to insert the option.value into the document
-      range.insertText(option.value, Word.InsertLocation.end);
+      range.insertText(" " + option.value, Word.InsertLocation.end);
       range.load();
       await context.sync();
 
@@ -156,7 +159,7 @@ function hoverOverOption(currentRange, event) {
     return Word.run(currentRange.range, async (context) => {
       //get the range of the selected text
 
-      textToRemove = option.value;
+      textToRemove = " " + option.value;
 
       range = currentRange.range;
       range.load();
