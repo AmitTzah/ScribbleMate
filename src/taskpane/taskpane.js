@@ -228,28 +228,13 @@ function initializeEventListeners(api_key, currentRange, numOptions) {
     suggestText(api_key, numOptions);
   });
 
-  //add a hover event listener for every option in the generations div
-  //Iterate through the generations div and add a hover event listener to each option
-  const generations = document.getElementById("generations");
-  for (let i = 0; i < generations.childElementCount; i++) {
-    //check if the element is a textarea by checking if it has the class "textarea"
-    if (generations.children[i].classList.contains("textarea")) {
-      //add a two event listeners to the textarea, mouseenter and mouseleave
-
-      generations.children[i].addEventListener("mouseenter", function (event) {
-        hoverOverOption(currentRange, event);
-      });
-
-      generations.children[i].addEventListener("mouseleave", function (event) {
-        hoverOverOption(currentRange, event);
-      });
-    }
-  }
-
   //add an event listener for the options-select select element to update the number of options and thier event listeners
   document.getElementById("options-select").addEventListener("change", function () {
     optionsSelect(numOptions, currentRange);
   });
+
+  //fire the change event on the options-select element to initialize the number of options and thier event listeners
+  document.getElementById("options-select").dispatchEvent(new Event("change"));
 }
 
 Office.onReady((info) => {
