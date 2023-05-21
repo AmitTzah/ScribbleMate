@@ -162,7 +162,7 @@ function hoverOverOption(currentRange, event) {
     return Word.run(currentRange.range, async (context) => {
       //get the range of the selected text
 
-      textToRemove = " " + option.value;
+      textToRemove = option.value;
 
       range = currentRange.range;
       range.load();
