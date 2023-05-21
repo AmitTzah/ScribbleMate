@@ -7,7 +7,7 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText(api_key, numOptions = 2) {
+async function suggestText(api_key, numOptions) {
   // Get the selected text from the input textarea
   //Send the selected text to the GPT-3 API to generate a description
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
@@ -16,33 +16,10 @@ async function suggestText(api_key, numOptions = 2) {
   const selectedText = document.getElementById("inputTextArea").value;
 
   //Send the selected text to the GPT-3 API to generate a description
-  const continuations = await generateContinuations(api_key.value, selectedText, numOptions);
+  const continuations = await generateContinuations(api_key.value, selectedText, numOptions.value);
 
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
-  for (let i = 0; i < numOptions; i++) {
-    //remove all the textareas above numOptions currently in the generations div
-    const generations = document.getElementById("generations");
-    while (generations.childElementCount > 2 * numOptions - 1) {
-      generations.removeChild(generations.lastChild);
-    }
-
-    //if the textarea doesn't exist, create it
-    if (!document.getElementById(`option ${i + 1}`)) {
-      const textarea = document.createElement("textarea");
-      textarea.id = `option ${i + 1}`;
-      textarea.className = "textarea";
-      textarea.readOnly = true;
-      textarea.placeholder = "The generations will appear here.";
-
-      const subtitle = document.createElement("p");
-      subtitle.className = "subtitle mt-2";
-      subtitle.innerText = `Option ${i + 1}:`;
-
-      document.getElementById("generations").appendChild(subtitle);
-
-      document.getElementById("generations").appendChild(textarea);
-    }
-
+  for (let i = 0; i < numOptions.value; i++) {
     document.getElementById(`option ${i + 1}`).value = continuations[i];
   }
 }
@@ -131,8 +108,6 @@ async function updateSelectedText(currentRange) {
 
     if (currentRange.range !== null) {
       currentRange.range.context.trackedObjects.remove(currentRange.range);
-      console.log("removed tracked object");
-      console.log(currentRange.range);
     }
 
     const textarea = document.getElementById("inputTextArea");
@@ -140,8 +115,6 @@ async function updateSelectedText(currentRange) {
 
     context.trackedObjects.add(selection);
     currentRange.range = selection;
-    console.log("added tracked object");
-    console.log(currentRange.range);
   });
 }
 
@@ -155,8 +128,6 @@ function hoverOverOption(currentRange, event) {
     return;
   }
   if (event.type === "mouseenter") {
-    console.log("Hover started");
-
     return Word.run(currentRange.range, async (context) => {
       //get the range of the selected text
 
@@ -171,12 +142,8 @@ function hoverOverOption(currentRange, event) {
 
       //deselct the text
       range.select("end");
-
-      console.log("rangeText after insertText");
-      console.log(range.text);
     });
   } else if (event.type === "mouseleave") {
-    console.log("Hover ended");
     // Trigger your desired action or event when hovering ends
 
     return Word.run(currentRange.range, async (context) => {
@@ -204,21 +171,61 @@ function hoverOverOption(currentRange, event) {
   }
 }
 
+//add an event listener for the options-select select element to update the number of options and thier event listeners
+function optionsSelect(numOptions, currentRange) {
+  //get the value of the selected option as an integer
+  numOptions.value = parseInt(document.getElementById("options-select").value);
+
+  //remove all the textareas above numOptions currently in the generations div
+  const generations = document.getElementById("generations");
+  while (generations.childElementCount > 2 * numOptions.value - 1) {
+    generations.removeChild(generations.lastChild);
+  }
+
+  for (let i = 0; i < numOptions.value; i++) {
+    //if the textarea doesn't exist, create it
+    if (!document.getElementById(`option ${i + 1}`)) {
+      const textarea = document.createElement("textarea");
+      textarea.id = `option ${i + 1}`;
+      textarea.className = "textarea";
+      textarea.readOnly = true;
+      textarea.placeholder = "The generations will appear here.";
+
+      const subtitle = document.createElement("p");
+      subtitle.className = "subtitle mt-2";
+      subtitle.innerText = `Option ${i + 1}:`;
+
+      document.getElementById("generations").appendChild(subtitle);
+
+      document.getElementById("generations").appendChild(textarea);
+
+      //add a hover event listener to the textarea
+      textarea.addEventListener("mouseenter", function (event) {
+        hoverOverOption(currentRange, event);
+      });
+
+      textarea.addEventListener("mouseleave", function (event) {
+        hoverOverOption(currentRange, event);
+      });
+    }
+  }
+}
+
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange) {
+function initializeEventListeners(api_key, currentRange, numOptions) {
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
   });
 
-  // Add event handler for selection change
+  // Add event handler for text selection change
   Office.context.document.addHandlerAsync(Office.EventType.DocumentSelectionChanged, function () {
     updateSelectedText(currentRange);
   });
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function () {
-    suggestText(api_key);
+    suggestText(api_key, numOptions);
   });
 
   //add a hover event listener for every option in the generations div
@@ -238,6 +245,11 @@ function initializeEventListeners(api_key, currentRange) {
       });
     }
   }
+
+  //add an event listener for the options-select select element to update the number of options and thier event listeners
+  document.getElementById("options-select").addEventListener("change", function () {
+    optionsSelect(numOptions, currentRange);
+  });
 }
 
 Office.onReady((info) => {
@@ -248,7 +260,10 @@ Office.onReady((info) => {
     // Global variable to store the range object of the the input text.
     let currentRange = { range: null };
 
+    //global variable to store the number of options
+    let numOptions = { value: parseInt(document.getElementById("options-select").value) };
+
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange);
+    initializeEventListeners(api_key, currentRange, numOptions);
   }
 });
