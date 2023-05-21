@@ -19,7 +19,7 @@ async function suggestText(api_key, numOptions) {
   const lastChar = selectedText[selectedText.length - 1];
   if (lastChar === "\n") {
     //remove it
-    selectedText = selectedText.slice(0, -1);
+    selectedText = selectedText.trimEnd();
   }
 
   //Send the selected text to the GPT-3 API to generate a description
