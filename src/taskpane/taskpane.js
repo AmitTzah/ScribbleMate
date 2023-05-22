@@ -194,7 +194,7 @@ function hoverOverOption(currentRange, event) {
       await context.sync();
 
       //deselct the text
-      range.select("end");
+      //range.select("end");
     });
   } else if (event.type === "mouseleave") {
     //check if option is focused
