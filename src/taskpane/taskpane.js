@@ -125,6 +125,49 @@ async function updateSelectedText(currentRange) {
   });
 }
 
+async function basicSearchRemoval(context, inputRange, fullSearchterm) {
+  //this function removes the fullSearchterm from the inputRange
+  //since range.search doesn't work with search terms longer than 255 characters, we need to split the search term into multiple parts
+  //and remove each part individually
+  //This function assumes that inputRange indeed contains the fullSearchterm
+
+  let restOfSearchterm = fullSearchterm;
+
+  while (restOfSearchterm.length > 0) {
+    //first check if restOfSearchterm is less than 255 characters
+    if (restOfSearchterm.length < 255) {
+      //search for the rest of the search term
+      const searchResults = inputRange.search(restOfSearchterm);
+      //load the search results
+      searchResults.load("items");
+      await context.sync();
+      //get the first search result
+      var searchResult = searchResults.items[0];
+
+      //remove the search result
+      searchResult.delete();
+      await context.sync();
+      //set restOfSearchterm to an empty string
+      restOfSearchterm = "";
+    } else {
+      //get the first 255 characters of the search term
+      const firstPart = restOfSearchterm.slice(0, 255);
+
+      //get the rest of the search term
+      restOfSearchterm = restOfSearchterm.slice(255);
+      //search for the first part of the search term
+      const searchResults = inputRange.search(firstPart);
+      //load the search results
+      searchResults.load("items");
+      await context.sync();
+      //get the first search result
+      var searchResult = searchResults.items[0];
+      //remove the search result
+      searchResult.delete();
+    }
+  }
+}
+
 //Function for hover over options
 function hoverOverOption(currentRange, event) {
   //get the option that was hovered over
@@ -163,23 +206,10 @@ function hoverOverOption(currentRange, event) {
       //get the range of the selected text
 
       textToRemove = option.value;
-
       range = currentRange.range;
       range.load();
       await context.sync();
-
-      //use search method to find the option.value in the range
-      var searchResults = range.search(textToRemove);
-
-      //load the search results
-      searchResults.load("items");
-
-      await context.sync();
-
-      //get the first search result
-      var searchResult = searchResults.items[0];
-      //remove the search result
-      searchResult.delete();
+      await basicSearchRemoval(context, range, textToRemove);
     });
   }
 }
