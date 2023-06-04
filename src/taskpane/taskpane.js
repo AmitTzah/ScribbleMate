@@ -21,6 +21,11 @@ async function suggestText(api_key, numOptions, textInserted, event) {
     insert_button.disabled = false;
     //clear the textareas
     document.getElementById(`option ${i}`).value = "";
+
+    //add loading icon to the textareas
+    const parentDiv = document.getElementById(`option ${i}`).parentElement;
+    parentDiv.classList.add("is-loading");
+    parentDiv.classList.add("is-large");
   }
 
   // Get the selected text from the input textarea
@@ -47,6 +52,13 @@ async function suggestText(api_key, numOptions, textInserted, event) {
 
   //remove the loading icon from the button
   event.target.classList.remove("is-loading");
+
+  //remove the is-loading class from the parent divs
+  for (let i = 1; i <= numOptions.value; i++) {
+    const parentDiv = document.getElementById(`option ${i}`).parentElement;
+    parentDiv.classList.remove("is-loading");
+    parentDiv.classList.remove("is-large");
+  }
 }
 
 async function validateAndSaveApiKey(api_key) {
@@ -266,6 +278,11 @@ function optionsSelect(numOptions, currentRange, textInserted) {
       textarea.readOnly = true;
       textarea.placeholder = "The generations will appear here.";
 
+      // wrap each text area with a div that has the class "control"
+      const control = document.createElement("div");
+      control.className = "control";
+      control.appendChild(textarea);
+
       const subtitle = document.createElement("p");
       subtitle.className = "subtitle mt-2";
       subtitle.innerText = `Option ${i + 1}:`;
@@ -335,7 +352,7 @@ function optionsSelect(numOptions, currentRange, textInserted) {
 
       document.getElementById("generations").appendChild(subtitle);
 
-      document.getElementById("generations").appendChild(textarea);
+      document.getElementById("generations").appendChild(control);
 
       document.getElementById("generations").appendChild(nav);
 
