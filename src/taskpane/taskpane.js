@@ -290,12 +290,10 @@ function optionsSelect(numOptions, currentRange, textInserted) {
           remove_button = document.getElementById(`remove-option-${i + 1}`);
           remove_button.style.display = "inline-block";
 
-          //grey out all the other insert buttons
+          //grey out all other insert buttons
           for (let j = 0; j < numOptions.value; j++) {
-            if (j !== i) {
-              const other_insert_button = document.getElementById(`insert-option-${j + 1}`);
-              other_insert_button.disabled = true;
-            }
+            const insert_button = document.getElementById(`insert-option-${j + 1}`);
+            insert_button.disabled = true;
           }
         }
       });
@@ -311,10 +309,8 @@ function optionsSelect(numOptions, currentRange, textInserted) {
 
         //ungrey out all the other insert buttons
         for (let j = 0; j < numOptions.value; j++) {
-          if (j !== i) {
-            const other_insert_button = document.getElementById(`insert-option-${j + 1}`);
-            other_insert_button.disabled = false;
-          }
+          const insert_button = document.getElementById(`insert-option-${j + 1}`);
+          insert_button.disabled = false;
         }
       });
 
