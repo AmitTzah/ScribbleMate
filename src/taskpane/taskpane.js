@@ -141,8 +141,8 @@ async function basicSearchRemoval(context, inputRange, fullSearchterm) {
       //load the search results
       searchResults.load("items");
       await context.sync();
-      //get the first search result
-      var searchResult = searchResults.items[0];
+      //get the last search result
+      var searchResult = searchResults.items[searchResults.items.length - 1];
 
       //remove the search result
       searchResult.delete();
@@ -194,6 +194,7 @@ function hoverOverOption(currentRange, event) {
       await context.sync();
 
       //deselct the text
+      //this makes the view jump to the inserted text
       //range.select("end");
     });
   } else if (event.type === "mouseleave") {
