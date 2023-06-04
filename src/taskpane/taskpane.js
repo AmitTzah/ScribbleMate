@@ -19,6 +19,8 @@ async function suggestText(api_key, numOptions, textInserted, event) {
     removeButton.style.display = "none";
     const insert_button = document.getElementById(`insert-option-${i}`);
     insert_button.disabled = false;
+    //clear the textareas
+    document.getElementById(`option ${i}`).value = "";
   }
 
   // Get the selected text from the input textarea
