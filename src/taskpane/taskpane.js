@@ -7,7 +7,17 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText(api_key, numOptions) {
+async function suggestText(api_key, numOptions, textInserted) {
+  textInserted.value = false;
+
+  //hide remove button from all options, if it exists, the id of that elemnt is "remove-option-i
+  for (let i = 1; i <= numOptions.value; i++) {
+    const removeButton = document.getElementById(`remove-option-${i}`);
+    removeButton.style.display = "none";
+    const insert_button = document.getElementById(`insert-option-${i}`);
+    insert_button.disabled = false;
+  }
+
   // Get the selected text from the input textarea
   //Send the selected text to the GPT-3 API to generate a description
   //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
@@ -169,54 +179,67 @@ async function basicSearchRemoval(context, inputRange, fullSearchterm) {
 }
 
 //Function for hover over options
-function hoverOverOption(currentRange, event) {
+function hoverOverOption(currentRange, event, textInserted) {
   //get the option that was hovered over
   const option = event.target;
 
+  if (textInserted.value === true) {
+    return;
+  }
+
+  if (event.type === "mouseenter") {
+    return insertOption(currentRange, option);
+  } else if (event.type === "mouseleave") {
+    return removeOption(currentRange, option);
+  }
+}
+
+function removeOption(currentRange, option) {
   //check if option.value is empty
   if (option.value === "") {
     return;
   }
-  if (event.type === "mouseenter") {
-    return Word.run(currentRange.range, async (context) => {
-      //get the range of the selected text
 
-      range = currentRange.range;
-      range.load();
-      await context.sync();
+  return Word.run(currentRange.range, async (context) => {
+    //get the range of the selected text
 
-      const trimmedText = range.text.trimEnd();
-      range.insertText(trimmedText, "Replace");
+    textToRemove = option.value;
+    range = currentRange.range;
+    range.load();
+    await context.sync();
+    await basicSearchRemoval(context, range, textToRemove);
+  });
+}
 
-      //use the range property of the textarea to insert the option.value into the document
-      range.insertText(" " + option.value, Word.InsertLocation.end);
-      range.load();
-      await context.sync();
-
-      //deselct the text
-      //this makes the view jump to the inserted text
-      //range.select("end");
-    });
-  } else if (event.type === "mouseleave") {
-    //check if option is focused
-    if (option === document.activeElement) {
-      return;
-    }
-
-    return Word.run(currentRange.range, async (context) => {
-      //get the range of the selected text
-
-      textToRemove = option.value;
-      range = currentRange.range;
-      range.load();
-      await context.sync();
-      await basicSearchRemoval(context, range, textToRemove);
-    });
+function insertOption(currentRange, option) {
+  //check if option.value is empty
+  if (option.value === "") {
+    return;
   }
+
+  return Word.run(currentRange.range, async (context) => {
+    //get the range of the selected text
+
+    range = currentRange.range;
+    range.load();
+    await context.sync();
+
+    const trimmedText = range.text.trimEnd();
+    range.insertText(trimmedText, "Replace");
+
+    //use the range property of the textarea to insert the option.value into the document
+    range.insertText(" " + option.value, Word.InsertLocation.end);
+    range.load();
+    await context.sync();
+
+    //deselct the text
+    //this makes the view jump to the inserted text
+    //range.select("end");
+  });
 }
 
 //add an event listener for the options-select select element to update the number of options and thier event listeners
-function optionsSelect(numOptions, currentRange) {
+function optionsSelect(numOptions, currentRange, textInserted) {
   //get the value of the selected option as an integer
   numOptions.value = parseInt(document.getElementById("options-select").value);
 
@@ -239,24 +262,93 @@ function optionsSelect(numOptions, currentRange) {
       subtitle.className = "subtitle mt-2";
       subtitle.innerText = `Option ${i + 1}:`;
 
+      //add a button underneath each textarea
+      //here's the format:<button id="insert-option-i" class="button is-info is-small">Insert</button>
+      const insert_button = document.createElement("button");
+      insert_button.id = `insert-option-${i + 1}`;
+      insert_button.className = "button is-info is-small";
+      insert_button.innerText = "Insert";
+      remove_button = document.createElement("button");
+      remove_button.id = `remove-option-${i + 1}`;
+      remove_button.className = "button is-info is-small";
+      remove_button.innerText = "Remove";
+
+      //add an event listener to each button, using the insertOption function
+      insert_button.addEventListener("click", function () {
+        const option = document.getElementById(`option ${i + 1}`);
+        insertOption(currentRange, option);
+
+        if (option.value !== "") {
+          textInserted.value = true;
+          //show remove button
+          remove_button = document.getElementById(`remove-option-${i + 1}`);
+          remove_button.style.display = "inline-block";
+
+          //grey out all the other insert buttons
+          for (let j = 0; j < numOptions.value; j++) {
+            if (j !== i) {
+              const other_insert_button = document.getElementById(`insert-option-${j + 1}`);
+              other_insert_button.disabled = true;
+            }
+          }
+        }
+      });
+
+      remove_button.addEventListener("click", function () {
+        const option = document.getElementById(`option ${i + 1}`);
+        removeOption(currentRange, option);
+        textInserted.value = false;
+
+        //hide remove button
+        remove_button = document.getElementById(`remove-option-${i + 1}`);
+        remove_button.style.display = "none";
+
+        //ungrey out all the other insert buttons
+        for (let j = 0; j < numOptions.value; j++) {
+          if (j !== i) {
+            const other_insert_button = document.getElementById(`insert-option-${j + 1}`);
+            other_insert_button.disabled = false;
+          }
+        }
+      });
+
+      const nav = document.createElement("nav");
+      nav.className = "level is-mobile mt-4";
+      const level_left = document.createElement("div");
+      level_left.className = "level-left";
+      const level_item_remove = document.createElement("div");
+      level_item_remove.className = "level-item has-text-centered";
+      const level_item_insert = document.createElement("div");
+      level_item_insert.className = "level-item has-text-centered";
+      level_item_insert.appendChild(insert_button);
+      level_item_remove.appendChild(remove_button);
+      level_left.appendChild(level_item_insert);
+      level_left.appendChild(level_item_remove);
+      nav.appendChild(level_left);
+
+      //hide remove button
+      remove_button.style.display = "none";
+
       document.getElementById("generations").appendChild(subtitle);
 
       document.getElementById("generations").appendChild(textarea);
 
+      document.getElementById("generations").appendChild(nav);
+
       //add a hover event listener to the textarea
       textarea.addEventListener("mouseenter", function (event) {
-        hoverOverOption(currentRange, event);
+        hoverOverOption(currentRange, event, textInserted);
       });
 
       textarea.addEventListener("mouseleave", function (event) {
-        hoverOverOption(currentRange, event);
+        hoverOverOption(currentRange, event, textInserted);
       });
     }
   }
 }
 
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange, numOptions) {
+function initializeEventListeners(api_key, currentRange, numOptions, textInserted) {
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
@@ -269,12 +361,12 @@ function initializeEventListeners(api_key, currentRange, numOptions) {
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function () {
-    suggestText(api_key, numOptions);
+    suggestText(api_key, numOptions, textInserted);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
   document.getElementById("options-select").addEventListener("change", function () {
-    optionsSelect(numOptions, currentRange);
+    optionsSelect(numOptions, currentRange, textInserted);
   });
 
   //fire the change event on the options-select element to initialize the number of options and thier event listeners
@@ -292,7 +384,10 @@ Office.onReady((info) => {
     //global variable to store the number of options
     let numOptions = { value: parseInt(document.getElementById("options-select").value) };
 
+    //Global variable to store whether the text is inserted or not
+    let textInserted = { value: false };
+
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange, numOptions);
+    initializeEventListeners(api_key, currentRange, numOptions, textInserted);
   }
 });
