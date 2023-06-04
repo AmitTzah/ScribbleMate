@@ -7,7 +7,10 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-async function suggestText(api_key, numOptions, textInserted) {
+async function suggestText(api_key, numOptions, textInserted, event) {
+  //Add a loading icon to the button
+  event.target.classList.add("is-loading");
+
   textInserted.value = false;
 
   //hide remove button from all options, if it exists, the id of that elemnt is "remove-option-i
@@ -39,6 +42,9 @@ async function suggestText(api_key, numOptions, textInserted) {
   for (let i = 0; i < numOptions.value; i++) {
     document.getElementById(`option ${i + 1}`).value = continuations[i];
   }
+
+  //remove the loading icon from the button
+  event.target.classList.remove("is-loading");
 }
 
 async function validateAndSaveApiKey(api_key) {
@@ -360,8 +366,8 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
   });
 
   //add an event listener for the suggest-button
-  document.getElementById("suggest-text-button").addEventListener("click", function () {
-    suggestText(api_key, numOptions, textInserted);
+  document.getElementById("suggest-text-button").addEventListener("click", function (event) {
+    suggestText(api_key, numOptions, textInserted, event);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
