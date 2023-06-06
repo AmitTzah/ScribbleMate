@@ -199,7 +199,7 @@ function updateNumOptions(numOptions) {
 
 function removeExcessOptions(numOptions) {
   const generations = document.getElementById("generations");
-  while (generations.childElementCount > 2 * numOptions.value - 1) {
+  while (generations.childElementCount > 3 * numOptions.value + 1) {
     generations.removeChild(generations.lastChild);
   }
 }
