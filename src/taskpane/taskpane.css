@@ -30,3 +30,11 @@
     background-repeat: no-repeat;
     background-position: center center;
   }
+
+  #login-screen {
+    min-height: 100vh;
+  }
+
+  #main-screen {
+    min-height: 100vh;
+  }
