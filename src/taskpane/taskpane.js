@@ -7,55 +7,85 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-const {optionsSelect} = require("./options.js");
+const { optionsSelect } = require("./options.js");
 
 async function suggestText(api_key, numOptions, textInserted, event) {
-  //Add a loading icon to the button
+  // Add a loading icon to the button
   event.target.classList.add("is-loading");
+
+  //add loading indicators to the textareas of all options
+  setLoadingAllOptions(numOptions);
+
+  resetOptions(numOptions, textInserted);
+
+  const selectedText = document.getElementById("inputTextArea").value;
+
+  const cleanedText = removeTrailingNewline(selectedText);
+
+  const continuations = await generateContinuations(api_key.value, cleanedText, numOptions.value);
+
+  updateOutputTextareas(continuations, numOptions);
+
+  event.target.classList.remove("is-loading");
+  removeLoadingClasses(numOptions);
+}
+
+function resetOptions(numOptions, textInserted) {
+  // This function resets the options to their default state
+  //T textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
 
   textInserted.value = false;
 
-  //hide remove button from all options, if it exists, the id of that elemnt is "remove-option-i
   for (let i = 1; i <= numOptions.value; i++) {
-    const removeButton = document.getElementById(`remove-option-${i}`);
-    removeButton.style.display = "none";
-    const insert_button = document.getElementById(`insert-option-${i}`);
-    insert_button.disabled = false;
-    //clear the textareas
-    document.getElementById(`option ${i}`).value = "";
-
-    //add loading icon to the textareas
-    const parentDiv = document.getElementById(`option ${i}`).parentElement;
-    parentDiv.classList.add("is-loading");
-    parentDiv.classList.add("is-large");
+    hideRemoveButton(i);
+    enableInsertButton(i);
+    clearTextarea(i);
   }
+}
 
-  // Get the selected text from the input textarea
-  //Send the selected text to the GPT-3 API to generate a description
-  //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
+function hideRemoveButton(optionIndex) {
+  const removeButton = document.getElementById(`remove-option-${optionIndex}`);
+  removeButton.style.display = "none";
+}
 
-  // Get the selected text from input textarea
-  let selectedText = document.getElementById("inputTextArea").value;
+function enableInsertButton(optionIndex) {
+  const insertButton = document.getElementById(`insert-option-${optionIndex}`);
+  insertButton.disabled = false;
+}
 
-  //check if selected text contains a /n character at the end
-  const lastChar = selectedText[selectedText.length - 1];
+function clearTextarea(optionIndex) {
+  document.getElementById(`option ${optionIndex}`).value = "";
+}
+
+function setLoadingClasses(optionIndex) {
+  //Adds loading indicators to the textarea of the given option
+  const parentDiv = document.getElementById(`option ${optionIndex}`).parentElement;
+  parentDiv.classList.add("is-loading");
+  parentDiv.classList.add("is-large");
+}
+
+//Add loading indicators to the textareas of all options
+function setLoadingAllOptions(numOptions) {
+  for (let i = 1; i <= numOptions.value; i++) {
+    setLoadingClasses(i);
+  }
+}
+
+function removeTrailingNewline(text) {
+  const lastChar = text[text.length - 1];
   if (lastChar === "\n") {
-    //remove it
-    selectedText = selectedText.trimEnd();
+    return text.trimEnd();
   }
+  return text;
+}
 
-  //Send the selected text to the GPT-3 API to generate a description
-  const continuations = await generateContinuations(api_key.value, selectedText, numOptions.value);
-
-  //put each generated description into the output textareas: "option 1", "option 2", "option 3", "option 4", "option 5"
+function updateOutputTextareas(continuations, numOptions) {
   for (let i = 0; i < numOptions.value; i++) {
     document.getElementById(`option ${i + 1}`).value = continuations[i];
   }
+}
 
-  //remove the loading icon from the button
-  event.target.classList.remove("is-loading");
-
-  //remove the is-loading class from the parent divs
+function removeLoadingClasses(numOptions) {
   for (let i = 1; i <= numOptions.value; i++) {
     const parentDiv = document.getElementById(`option ${i}`).parentElement;
     parentDiv.classList.remove("is-loading");
