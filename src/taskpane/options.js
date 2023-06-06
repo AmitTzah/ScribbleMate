@@ -84,7 +84,7 @@ function insertOption(currentRange, option) {
     range.insertText(trimmedText, "Replace");
 
     //use the range property of the textarea to insert the option.value into the document
-    range.insertText(" " + option.value, Word.InsertLocation.end);
+    range.insertText(" " + option.value + " ", Word.InsertLocation.end);
     range.load();
     await context.sync();
 
