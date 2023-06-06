@@ -261,7 +261,7 @@ function setLoadingAllOptions(numOptions) {
 
 function resetOptions(numOptions, textInserted) {
   // This function resets the options to their default state
-  //T textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
+  //The textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
 
   textInserted.value = false;
 

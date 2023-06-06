@@ -24,7 +24,7 @@ function removeTrailingNewline(text) {
 }
 
 async function suggestText(api_key, numOptions, textInserted, event) {
-  // Add a loading icon to the button
+  // Add a loading icon to the suggest text button
   event.target.classList.add("is-loading");
 
   //add loading indicators to the textareas of all options
@@ -45,74 +45,89 @@ async function suggestText(api_key, numOptions, textInserted, event) {
 }
 
 async function validateAndSaveApiKey(api_key) {
-  // Get the API key from the input box
   api_key.value = document.getElementById("api-key").value;
+  removeErrorIcon();
+  removeCheckIcon();
+  removeErrorMessage();
+  showLoadingState();
 
-  //remove the error icon if it exists
+  const valid = await checkApiKey(api_key.value);
+
+  if (!valid) {
+    removeLoadingState();
+    addErrorIcon();
+    addErrorMessage();
+  } else {
+    removeLoadingState();
+    addCheckIcon();
+    showMainScreen();
+  }
+}
+
+function removeErrorIcon() {
   const icon = document.querySelector(".icon-alert-triangle");
   if (icon) {
     icon.remove();
   }
+}
 
-  //remove the check icon if it exists
-  const icon2 = document.querySelector(".icon-check");
-  if (icon2) {
-    icon2.remove();
+function removeCheckIcon() {
+  const icon = document.querySelector(".icon-check");
+  if (icon) {
+    icon.remove();
   }
+}
 
-  //remove the error message if it exists
+function removeErrorMessage() {
   const error = document.getElementById("api-input-error-message");
   if (error) {
     error.remove();
   }
-
-  //to the control-api-input element, add the class is-loading
-  document.getElementById("control-api-input").classList.add("is-loading");
-
-  // Check if the API key is valid
-  const valid = await checkApiKey(api_key.value);
-
-  if (!valid) {
-    //remove the is-loading class from the control-api-input element
-    document.getElementById("control-api-input").classList.remove("is-loading");
-    //add an error icon to the api-key input box
-    const icon = document.createElement("span");
-    icon.className = "icon is-small is-right";
-    const icon2 = document.createElement("span");
-    icon2.className = "icon-alert-triangle";
-    icon.appendChild(icon2);
-
-    document.getElementById("api-key").insertAdjacentElement("afterend", icon);
-
-    //add an error message to the api-key input box
-    const error = document.createElement("p");
-    error.id = "api-input-error-message";
-    error.className = "help is-danger";
-    error.innerText = "This API key is invalid";
-
-    document.getElementById("api-input-field").insertAdjacentElement("afterend", error);
-  } else {
-    //remove the is-loading class from the control-api-input element
-    document.getElementById("control-api-input").classList.remove("is-loading");
-
-    //add a check icon to the api-key input box
-    const icon = document.createElement("span");
-    icon.className = "icon is-small is-right";
-    const icon2 = document.createElement("span");
-    icon2.className = "icon-check";
-    icon.appendChild(icon2);
-
-    document.getElementById("api-key").insertAdjacentElement("afterend", icon);
-
-    //set the display of the "login-screen" to none
-    //Remove the display:none from the "main-screen"
-
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("main-screen").style.display = "block";
-  }
 }
 
-// Function to update the textarea with the selected text
+function showLoadingState() {
+  document.getElementById("control-api-input").classList.add("is-loading");
+}
+
+function removeLoadingState() {
+  document.getElementById("control-api-input").classList.remove("is-loading");
+}
+
+function addErrorIcon() {
+  const icon = document.createElement("span");
+  icon.className = "icon is-small is-right";
+  const icon2 = document.createElement("span");
+  icon2.className = "icon-alert-triangle";
+  icon.appendChild(icon2);
+
+  document.getElementById("api-key").insertAdjacentElement("afterend", icon);
+}
+
+function addErrorMessage() {
+  const error = document.createElement("p");
+  error.id = "api-input-error-message";
+  error.className = "help is-danger";
+  error.innerText = "This API key is invalid";
+
+  document.getElementById("api-input-field").insertAdjacentElement("afterend", error);
+}
+
+function addCheckIcon() {
+  const icon = document.createElement("span");
+  icon.className = "icon is-small is-right";
+  const icon2 = document.createElement("span");
+  icon2.className = "icon-check";
+  icon.appendChild(icon2);
+
+  document.getElementById("api-key").insertAdjacentElement("afterend", icon);
+}
+
+function showMainScreen() {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("main-screen").style.display = "block";
+}
+
+// Function to update the inputTextArea with the selected text
 async function updateSelectedText(currentRange) {
   return Word.run(async (context) => {
     // Get the selected text
