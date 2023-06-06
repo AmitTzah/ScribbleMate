@@ -7,7 +7,21 @@
 
 const { generateContinuations, checkApiKey } = require("./gpt3/gpt3.js");
 
-const { optionsSelect } = require("./options.js");
+const {
+  optionsSelect,
+  setLoadingAllOptions,
+  resetOptions,
+  updateOutputTextareas,
+  removeLoadingAllClasses,
+} = require("./options.js");
+
+function removeTrailingNewline(text) {
+  const lastChar = text[text.length - 1];
+  if (lastChar === "\n") {
+    return text.trimEnd();
+  }
+  return text;
+}
 
 async function suggestText(api_key, numOptions, textInserted, event) {
   // Add a loading icon to the button
@@ -27,70 +41,7 @@ async function suggestText(api_key, numOptions, textInserted, event) {
   updateOutputTextareas(continuations, numOptions);
 
   event.target.classList.remove("is-loading");
-  removeLoadingClasses(numOptions);
-}
-
-function resetOptions(numOptions, textInserted) {
-  // This function resets the options to their default state
-  //T textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
-
-  textInserted.value = false;
-
-  for (let i = 1; i <= numOptions.value; i++) {
-    hideRemoveButton(i);
-    enableInsertButton(i);
-    clearTextarea(i);
-  }
-}
-
-function hideRemoveButton(optionIndex) {
-  const removeButton = document.getElementById(`remove-option-${optionIndex}`);
-  removeButton.style.display = "none";
-}
-
-function enableInsertButton(optionIndex) {
-  const insertButton = document.getElementById(`insert-option-${optionIndex}`);
-  insertButton.disabled = false;
-}
-
-function clearTextarea(optionIndex) {
-  document.getElementById(`option ${optionIndex}`).value = "";
-}
-
-function setLoadingClasses(optionIndex) {
-  //Adds loading indicators to the textarea of the given option
-  const parentDiv = document.getElementById(`option ${optionIndex}`).parentElement;
-  parentDiv.classList.add("is-loading");
-  parentDiv.classList.add("is-large");
-}
-
-//Add loading indicators to the textareas of all options
-function setLoadingAllOptions(numOptions) {
-  for (let i = 1; i <= numOptions.value; i++) {
-    setLoadingClasses(i);
-  }
-}
-
-function removeTrailingNewline(text) {
-  const lastChar = text[text.length - 1];
-  if (lastChar === "\n") {
-    return text.trimEnd();
-  }
-  return text;
-}
-
-function updateOutputTextareas(continuations, numOptions) {
-  for (let i = 0; i < numOptions.value; i++) {
-    document.getElementById(`option ${i + 1}`).value = continuations[i];
-  }
-}
-
-function removeLoadingClasses(numOptions) {
-  for (let i = 1; i <= numOptions.value; i++) {
-    const parentDiv = document.getElementById(`option ${i}`).parentElement;
-    parentDiv.classList.remove("is-loading");
-    parentDiv.classList.remove("is-large");
-  }
+  removeLoadingAllClasses(numOptions);
 }
 
 async function validateAndSaveApiKey(api_key) {

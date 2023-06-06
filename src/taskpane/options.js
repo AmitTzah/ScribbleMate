@@ -21,7 +21,6 @@ async function basicSearchRemoval(context, inputRange, fullSearchterm) {
 }
 
 async function removeSearchResult(context, inputRange, searchTerm) {
-    
   //remove the last search result from the inputRange
   //assuming the search term is not longer than 255 characters
   const searchResults = inputRange.search(searchTerm);
@@ -253,6 +252,72 @@ function appendElements(parent, elements) {
   }
 }
 
+//Add loading indicators to the textareas of all options
+function setLoadingAllOptions(numOptions) {
+  for (let i = 1; i <= numOptions.value; i++) {
+    setLoadingClasses(i);
+  }
+}
+
+function resetOptions(numOptions, textInserted) {
+  // This function resets the options to their default state
+  //T textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
+
+  textInserted.value = false;
+
+  for (let i = 1; i <= numOptions.value; i++) {
+    hideRemoveButton(i);
+    enableInsertButton(i);
+    clearTextarea(i);
+  }
+}
+
+function hideRemoveButton(optionIndex) {
+  const removeButton = document.getElementById(`remove-option-${optionIndex}`);
+  removeButton.style.display = "none";
+}
+
+function enableInsertButton(optionIndex) {
+  const insertButton = document.getElementById(`insert-option-${optionIndex}`);
+  insertButton.disabled = false;
+}
+
+function clearTextarea(optionIndex) {
+  document.getElementById(`option ${optionIndex}`).value = "";
+}
+
+function setLoadingClasses(optionIndex) {
+  //Adds loading indicators to the textarea of the given option
+  const parentDiv = document.getElementById(`option ${optionIndex}`).parentElement;
+  parentDiv.classList.add("is-loading");
+  parentDiv.classList.add("is-large");
+}
+
+function updateOutputTextareas(continuations, numOptions) {
+  //update the textareas of all options
+  for (let i = 0; i < numOptions.value; i++) {
+    document.getElementById(`option ${i + 1}`).value = continuations[i];
+  }
+}
+
+function removeLoadingAllClasses(numOptions) {
+  //remove the loading indicators from the textareas of all options
+  for (let i = 1; i <= numOptions.value; i++) {
+    removeLoadingClasses(i);
+  }
+}
+
+function removeLoadingClasses(optionIndex) {
+  //remove the loading indicators from the textarea of the given option
+  const parentDiv = document.getElementById(`option ${optionIndex}`).parentElement;
+  parentDiv.classList.remove("is-loading");
+  parentDiv.classList.remove("is-large");
+}
+
 module.exports = {
   optionsSelect,
+  setLoadingAllOptions,
+  resetOptions,
+  updateOutputTextareas,
+  removeLoadingAllClasses,
 };
