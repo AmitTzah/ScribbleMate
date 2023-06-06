@@ -223,30 +223,41 @@ function createMissingOptions(numOptions, currentRange, textInserted) {
       const insert_button = createInsertButton(i);
       const remove_button = createRemoveButton(i);
 
-      insert_button.addEventListener("click", function () {
-        handleInsertButtonClick(i, numOptions, currentRange, textInserted);
-      });
-
-      remove_button.addEventListener("click", function () {
-        handleRemoveButtonClick(i, numOptions, currentRange, textInserted);
-      });
+      setupButtonListeners(i, numOptions, currentRange, textInserted, insert_button, remove_button);
+      setupOptionHoverHandlers(currentRange, textInserted, textarea);
 
       const nav = createNav(insert_button, remove_button);
       remove_button.style.display = "none";
 
       const generations = document.getElementById("generations");
-      generations.appendChild(subtitle);
-      generations.appendChild(control);
-      generations.appendChild(nav);
-
-      textarea.addEventListener("mouseenter", function (event) {
-        hoverOverOption(currentRange, event, textInserted);
-      });
-
-      textarea.addEventListener("mouseleave", function (event) {
-        hoverOverOption(currentRange, event, textInserted);
-      });
+      appendElements(generations, [subtitle, control, nav]);
     }
+  }
+}
+
+function setupButtonListeners(optionIndex, numOptions, currentRange, textInserted, insert_button, remove_button) {
+  insert_button.addEventListener("click", function () {
+    handleInsertButtonClick(optionIndex, numOptions, currentRange, textInserted);
+  });
+
+  remove_button.addEventListener("click", function () {
+    handleRemoveButtonClick(optionIndex, numOptions, currentRange, textInserted);
+  });
+}
+
+function setupOptionHoverHandlers(currentRange, textInserted, textarea) {
+  textarea.addEventListener("mouseenter", function (event) {
+    hoverOverOption(currentRange, event, textInserted);
+  });
+
+  textarea.addEventListener("mouseleave", function (event) {
+    hoverOverOption(currentRange, event, textInserted);
+  });
+}
+
+function appendElements(parent, elements) {
+  for (const element of elements) {
+    parent.appendChild(element);
   }
 }
 
