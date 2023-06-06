@@ -196,20 +196,27 @@ function handleRemoveButtonClick(i, numOptions, currentRange, textInserted) {
 function optionsSelect(numOptions, currentRange, textInserted) {
   //this function is called when the number of options is changed (via the select element) and when the page is loaded
   //It updates the generations div to have the correct number of textareas and buttons, and sets up the event listeners for the buttons and textareas
+  updateNumOptions(numOptions);
+  removeExcessOptions(numOptions);
+  createMissingOptions(numOptions, currentRange, textInserted);
+}
 
-  //Update the number of options
-  numOptions.value = parseInt(document.getElementById("options-select").value);
+function updateNumOptions(numOptions) {
+  const optionsSelectElement = document.getElementById("options-select");
+  numOptions.value = parseInt(optionsSelectElement.value);
+}
 
-  //remove all the textareas above numOptions currently in the generations div
+function removeExcessOptions(numOptions) {
   const generations = document.getElementById("generations");
   while (generations.childElementCount > 2 * numOptions.value - 1) {
     generations.removeChild(generations.lastChild);
   }
+}
 
+function createMissingOptions(numOptions, currentRange, textInserted) {
   for (let i = 0; i < numOptions.value; i++) {
-    //if the option doesn't exist, create it (including all the ui elements required)
-    if (!document.getElementById(`option ${i + 1}`)) {
-      //the following are all the ui elements that need to be created
+    const optionId = `option ${i + 1}`;
+    if (!document.getElementById(optionId)) {
       const textarea = createTextarea(i);
       const control = createControl(textarea);
       const subtitle = createSubtitle(i);
@@ -225,15 +232,13 @@ function optionsSelect(numOptions, currentRange, textInserted) {
       });
 
       const nav = createNav(insert_button, remove_button);
-
-      //hide remove button
       remove_button.style.display = "none";
 
-      document.getElementById("generations").appendChild(subtitle);
-      document.getElementById("generations").appendChild(control);
-      document.getElementById("generations").appendChild(nav);
+      const generations = document.getElementById("generations");
+      generations.appendChild(subtitle);
+      generations.appendChild(control);
+      generations.appendChild(nav);
 
-      //add a hover event listener to the textarea
       textarea.addEventListener("mouseenter", function (event) {
         hoverOverOption(currentRange, event, textInserted);
       });
