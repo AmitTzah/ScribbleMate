@@ -9,37 +9,29 @@ async function basicSearchRemoval(context, inputRange, fullSearchterm) {
   let restOfSearchterm = fullSearchterm;
 
   while (restOfSearchterm.length > 0) {
-    //first check if restOfSearchterm is less than 255 characters
     if (restOfSearchterm.length < 255) {
-      //search for the rest of the search term
-      const searchResults = inputRange.search(restOfSearchterm);
-      //load the search results
-      searchResults.load("items");
-      await context.sync();
-      //get the last search result
-      var searchResult = searchResults.items[searchResults.items.length - 1];
-
-      //remove the search result
-      searchResult.delete();
-      await context.sync();
-      //set restOfSearchterm to an empty string
+      await removeSearchResult(context, inputRange, restOfSearchterm);
       restOfSearchterm = "";
     } else {
-      //get the first 255 characters of the search term
       const firstPart = restOfSearchterm.slice(0, 255);
-
-      //get the rest of the search term
       restOfSearchterm = restOfSearchterm.slice(255);
-      //search for the first part of the search term
-      const searchResults = inputRange.search(firstPart);
-      //load the search results
-      searchResults.load("items");
-      await context.sync();
-      //get the first search result
-      var searchResult = searchResults.items[0];
-      //remove the search result
-      searchResult.delete();
+      await removeSearchResult(context, inputRange, firstPart);
     }
+  }
+}
+
+async function removeSearchResult(context, inputRange, searchTerm) {
+    
+  //remove the last search result from the inputRange
+  //assuming the search term is not longer than 255 characters
+  const searchResults = inputRange.search(searchTerm);
+  searchResults.load("items");
+  await context.sync();
+
+  if (searchResults.items.length > 0) {
+    const lastSearchResult = searchResults.items[searchResults.items.length - 1];
+    lastSearchResult.delete();
+    await context.sync();
   }
 }
 
