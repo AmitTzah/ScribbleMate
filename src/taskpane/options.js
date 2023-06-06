@@ -103,9 +103,101 @@ function insertOption(currentRange, option) {
   });
 }
 
-//add an event listener for the options-select select element to update the number of options and thier event listeners
+function createTextarea(i) {
+  const textarea = document.createElement("textarea");
+  textarea.id = `option ${i + 1}`;
+  textarea.className = "textarea";
+  textarea.readOnly = true;
+  textarea.placeholder = "The generations will appear here.";
+  return textarea;
+}
+
+function createControl(textarea) {
+  const control = document.createElement("div");
+  control.className = "control";
+  control.appendChild(textarea);
+  return control;
+}
+
+function createSubtitle(i) {
+  const subtitle = document.createElement("p");
+  subtitle.className = "subtitle mt-2";
+  subtitle.innerText = `Option ${i + 1}:`;
+  return subtitle;
+}
+
+function createInsertButton(i) {
+  const insert_button = document.createElement("button");
+  insert_button.id = `insert-option-${i + 1}`;
+  insert_button.className = "button is-info is-small";
+  insert_button.innerText = "Insert";
+  return insert_button;
+}
+
+function createRemoveButton(i) {
+  const remove_button = document.createElement("button");
+  remove_button.id = `remove-option-${i + 1}`;
+  remove_button.className = "button is-info is-small";
+  remove_button.innerText = "Remove";
+  return remove_button;
+}
+
+function createNav(insert_button, remove_button) {
+  const nav = document.createElement("nav");
+  nav.className = "level is-mobile mt-4";
+  const level_left = document.createElement("div");
+  level_left.className = "level-left";
+  const level_item_remove = document.createElement("div");
+  level_item_remove.className = "level-item has-text-centered";
+  const level_item_insert = document.createElement("div");
+  level_item_insert.className = "level-item has-text-centered";
+  level_item_insert.appendChild(insert_button);
+  level_item_remove.appendChild(remove_button);
+  level_left.appendChild(level_item_insert);
+  level_left.appendChild(level_item_remove);
+  nav.appendChild(level_left);
+  return nav;
+}
+
+function handleInsertButtonClick(i, numOptions, currentRange, textInserted) {
+  const option = document.getElementById(`option ${i + 1}`);
+  insertOption(currentRange, option);
+
+  if (option.value !== "") {
+    textInserted.value = true;
+    //show remove button
+    remove_button = document.getElementById(`remove-option-${i + 1}`);
+    remove_button.style.display = "inline-block";
+
+    //grey out all other insert buttons
+    for (let j = 0; j < numOptions.value; j++) {
+      const insert_button = document.getElementById(`insert-option-${j + 1}`);
+      insert_button.disabled = true;
+    }
+  }
+}
+
+function handleRemoveButtonClick(i, numOptions, currentRange, textInserted) {
+  const option = document.getElementById(`option ${i + 1}`);
+  removeOption(currentRange, option);
+  textInserted.value = false;
+
+  //hide remove button
+  remove_button = document.getElementById(`remove-option-${i + 1}`);
+  remove_button.style.display = "none";
+
+  //ungrey out all the other insert buttons
+  for (let j = 0; j < numOptions.value; j++) {
+    const insert_button = document.getElementById(`insert-option-${j + 1}`);
+    insert_button.disabled = false;
+  }
+}
+
 function optionsSelect(numOptions, currentRange, textInserted) {
-  //get the value of the selected option as an integer
+  //this function is called when the number of options is changed (via the select element) and when the page is loaded
+  //It updates the generations div to have the correct number of textareas and buttons, and sets up the event listeners for the buttons and textareas
+
+  //Update the number of options
   numOptions.value = parseInt(document.getElementById("options-select").value);
 
   //remove all the textareas above numOptions currently in the generations div
@@ -115,90 +207,30 @@ function optionsSelect(numOptions, currentRange, textInserted) {
   }
 
   for (let i = 0; i < numOptions.value; i++) {
-    //if the textarea doesn't exist, create it
+    //if the option doesn't exist, create it (including all the ui elements required)
     if (!document.getElementById(`option ${i + 1}`)) {
-      const textarea = document.createElement("textarea");
-      textarea.id = `option ${i + 1}`;
-      textarea.className = "textarea";
-      textarea.readOnly = true;
-      textarea.placeholder = "The generations will appear here.";
+      //the following are all the ui elements that need to be created
+      const textarea = createTextarea(i);
+      const control = createControl(textarea);
+      const subtitle = createSubtitle(i);
+      const insert_button = createInsertButton(i);
+      const remove_button = createRemoveButton(i);
 
-      // wrap each text area with a div that has the class "control"
-      const control = document.createElement("div");
-      control.className = "control";
-      control.appendChild(textarea);
-
-      const subtitle = document.createElement("p");
-      subtitle.className = "subtitle mt-2";
-      subtitle.innerText = `Option ${i + 1}:`;
-
-      //add a button underneath each textarea
-      //here's the format:<button id="insert-option-i" class="button is-info is-small">Insert</button>
-      const insert_button = document.createElement("button");
-      insert_button.id = `insert-option-${i + 1}`;
-      insert_button.className = "button is-info is-small";
-      insert_button.innerText = "Insert";
-      remove_button = document.createElement("button");
-      remove_button.id = `remove-option-${i + 1}`;
-      remove_button.className = "button is-info is-small";
-      remove_button.innerText = "Remove";
-
-      //add an event listener to each button, using the insertOption function
       insert_button.addEventListener("click", function () {
-        const option = document.getElementById(`option ${i + 1}`);
-        insertOption(currentRange, option);
-
-        if (option.value !== "") {
-          textInserted.value = true;
-          //show remove button
-          remove_button = document.getElementById(`remove-option-${i + 1}`);
-          remove_button.style.display = "inline-block";
-
-          //grey out all other insert buttons
-          for (let j = 0; j < numOptions.value; j++) {
-            const insert_button = document.getElementById(`insert-option-${j + 1}`);
-            insert_button.disabled = true;
-          }
-        }
+        handleInsertButtonClick(i, numOptions, currentRange, textInserted);
       });
 
       remove_button.addEventListener("click", function () {
-        const option = document.getElementById(`option ${i + 1}`);
-        removeOption(currentRange, option);
-        textInserted.value = false;
-
-        //hide remove button
-        remove_button = document.getElementById(`remove-option-${i + 1}`);
-        remove_button.style.display = "none";
-
-        //ungrey out all the other insert buttons
-        for (let j = 0; j < numOptions.value; j++) {
-          const insert_button = document.getElementById(`insert-option-${j + 1}`);
-          insert_button.disabled = false;
-        }
+        handleRemoveButtonClick(i, numOptions, currentRange, textInserted);
       });
 
-      const nav = document.createElement("nav");
-      nav.className = "level is-mobile mt-4";
-      const level_left = document.createElement("div");
-      level_left.className = "level-left";
-      const level_item_remove = document.createElement("div");
-      level_item_remove.className = "level-item has-text-centered";
-      const level_item_insert = document.createElement("div");
-      level_item_insert.className = "level-item has-text-centered";
-      level_item_insert.appendChild(insert_button);
-      level_item_remove.appendChild(remove_button);
-      level_left.appendChild(level_item_insert);
-      level_left.appendChild(level_item_remove);
-      nav.appendChild(level_left);
+      const nav = createNav(insert_button, remove_button);
 
       //hide remove button
       remove_button.style.display = "none";
 
       document.getElementById("generations").appendChild(subtitle);
-
       document.getElementById("generations").appendChild(control);
-
       document.getElementById("generations").appendChild(nav);
 
       //add a hover event listener to the textarea
