@@ -109,10 +109,34 @@ Office.onReady((info) => {
     //global variable to store the number of options
     let numOptions = { value: parseInt(document.getElementById("options-select").value) };
 
+    console.log("numOptions", numOptions);
+
     //Global variable to store whether the text is inserted or not
     let textInserted = { value: false };
 
     //initialize the event listeners
     initializeEventListeners(api_key, currentRange, numOptions, textInserted);
+
+    let currentIndex = 0;
+
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+    const currentOption = document.getElementById("currentOption");
+
+    function showOption(index) {
+      currentOption.textContent = "Option " + (index + 1);
+    }
+
+    prevButton.addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + numOptions.value) % numOptions.value;
+      showOption(currentIndex);
+    });
+
+    nextButton.addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % numOptions.value;
+      showOption(currentIndex);
+    });
+
+    showOption(currentIndex);
   }
 });

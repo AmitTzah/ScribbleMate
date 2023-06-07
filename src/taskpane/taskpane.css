@@ -40,31 +40,28 @@
   }
 
 
-  .icon-chevron-left {
-    display: inline-block;
-    height: 1.25rem;
-    width: 1.25rem;
-    background-image: url('./../../assets/chevron-left.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-  }
-
+  .icon-chevron-left,
   .icon-chevron-right {
     display: inline-block;
     height: 1.25rem;
     width: 1.25rem;
-    background-image: url('./../../assets/chevron-right.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
   }
-
-  .carousel {
-    display: inline-flex;
-    align-items: center; 
+  
+  .icon-chevron-left {
+    background-image: url('./../../assets/chevron-left.svg');
   }
   
+  .icon-chevron-right {
+    background-image: url('./../../assets/chevron-right.svg');
+  }
+  
+  .carousel {
+    display: inline-flex;
+    align-items: center;
+  }
   .carousel-option {
     margin: 0 1rem;
   }
