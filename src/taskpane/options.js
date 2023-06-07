@@ -4,45 +4,36 @@ function showOption(index) {
   currentOption.textContent = "Option " + (index + 1);
 }
 
+function addFocusToCurrentOption(currentIndex) {
+  const textarea = document.getElementById("option " + (currentIndex + 1));
+  textarea.classList.add("is-focused");
+}
+
+function removeFocusFromAllOptions(numOptions) {
+  for (let i = 0; i < numOptions; i++) {
+    const textarea = document.getElementById("option " + (i + 1));
+    textarea.classList.remove("is-focused");
+  }
+}
+
 function CycleOptionsEventListeners(numOptions, currentIndex) {
+  //add event listeners to the prev and next buttons
+
   const prevButton = document.getElementById("prevButton");
   const nextButton = document.getElementById("nextButton");
-  const currentOption = document.getElementById("currentOption");
 
   prevButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value - 1 + numOptions.value) % numOptions.value;
     showOption(currentIndex.value);
-
-    //remove is-focused class from all other textareas
-    for (let i = 0; i < numOptions.value; i++) {
-      if (i !== currentIndex.value) {
-        const textarea = document.getElementById("option " + (i + 1));
-        textarea.classList.remove("is-focused");
-      }
-    }
-
-    //get the textarea element of the current option
-    const textarea = document.getElementById("option " + (currentIndex.value + 1));
-    //add is-focused class to the textarea
-    textarea.classList.add("is-focused");
+    removeFocusFromAllOptions(numOptions.value);
+    addFocusToCurrentOption(currentIndex.value);
   });
 
   nextButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value + 1) % numOptions.value;
     showOption(currentIndex.value);
-
-    //remove is-focused class from all other textareas
-    for (let i = 0; i < numOptions.value; i++) {
-      if (i !== currentIndex.value) {
-        const textarea = document.getElementById("option " + (i + 1));
-        textarea.classList.remove("is-focused");
-      }
-    }
-
-    //get the textarea element of the current option
-    const textarea = document.getElementById("option " + (currentIndex.value + 1));
-    //add is-focused class to the textarea
-    textarea.classList.add("is-focused");
+    removeFocusFromAllOptions(numOptions.value);
+    addFocusToCurrentOption(currentIndex.value);
   });
 
   showOption(currentIndex.value);
