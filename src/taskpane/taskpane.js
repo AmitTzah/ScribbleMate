@@ -26,14 +26,14 @@ function removeTrailingNewline(text) {
   return text;
 }
 
-async function suggestText(api_key, numOptions, textInserted, event) {
+async function suggestText(api_key, numOptions, textInserted, event, currentIndex) {
   // Add a loading icon to the suggest text button
   event.target.classList.add("is-loading");
 
   //add loading indicators to the textareas of all options
   setLoadingAllOptions(numOptions);
 
-  resetOptions(numOptions, textInserted);
+  resetOptions(numOptions, textInserted, currentIndex);
 
   const selectedText = document.getElementById("inputTextArea").value;
 
@@ -45,6 +45,10 @@ async function suggestText(api_key, numOptions, textInserted, event) {
 
   event.target.classList.remove("is-loading");
   removeLoadingAllClasses(numOptions);
+
+  //fire the change event for the nextButton element
+  const nextButton = document.getElementById("nextButton");
+  nextButton.dispatchEvent(new Event("click"));
 }
 
 // Function to update the inputTextArea with the selected text
@@ -87,7 +91,7 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function (event) {
-    suggestText(api_key, numOptions, textInserted, event);
+    suggestText(api_key, numOptions, textInserted, event, currentIndex);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners

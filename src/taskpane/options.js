@@ -13,6 +13,8 @@ function showOption(index, currentRange, textInserted) {
 
   const currentOption = document.getElementById("option " + (index + 1));
 
+  console.log("currentOption", currentOption.value);
+
   insertOption(currentRange, currentOption);
 
   textInserted.value = index;
@@ -312,12 +314,12 @@ function setLoadingAllOptions(numOptions) {
   }
 }
 
-function resetOptions(numOptions, textInserted) {
+function resetOptions(numOptions, textInserted, currentIndex) {
   // This function resets the options to their default state
   //The textareas are cleared, the insert buttons are enabled, and the remove buttons are hidden
 
-  textInserted.value = false;
-
+  textInserted.value = -1;
+  currentIndex.value = -1;
   for (let i = 1; i <= numOptions.value; i++) {
     hideRemoveButton(i);
     enableInsertButton(i);
