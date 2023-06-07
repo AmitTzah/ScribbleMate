@@ -13,6 +13,7 @@ const {
   resetOptions,
   updateOutputTextareas,
   removeLoadingAllClasses,
+  CycleOptionsEventListeners,
 } = require("./options.js");
 
 const { validateAndSaveApiKey } = require("./login-screen.js");
@@ -73,7 +74,10 @@ async function updateSelectedText(currentRange) {
 }
 
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange, numOptions, textInserted) {
+function initializeEventListeners(api_key, currentRange, numOptions, textInserted, currentIndex) {
+  //initialize the event listeners for the options arrow buttons
+  CycleOptionsEventListeners(numOptions, currentIndex);
+
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
@@ -114,29 +118,10 @@ Office.onReady((info) => {
     //Global variable to store whether the text is inserted or not
     let textInserted = { value: false };
 
+    //Global variable to store the current index of the inserted option
+    let currentIndex = { value: 0 };
+
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange, numOptions, textInserted);
-
-    let currentIndex = 0;
-
-    const prevButton = document.getElementById("prevButton");
-    const nextButton = document.getElementById("nextButton");
-    const currentOption = document.getElementById("currentOption");
-
-    function showOption(index) {
-      currentOption.textContent = "Option " + (index + 1);
-    }
-
-    prevButton.addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + numOptions.value) % numOptions.value;
-      showOption(currentIndex);
-    });
-
-    nextButton.addEventListener("click", () => {
-      currentIndex = (currentIndex + 1) % numOptions.value;
-      showOption(currentIndex);
-    });
-
-    showOption(currentIndex);
+    initializeEventListeners(api_key, currentRange, numOptions, textInserted, currentIndex);
   }
 });

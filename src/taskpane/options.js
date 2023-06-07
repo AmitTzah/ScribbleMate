@@ -1,5 +1,27 @@
 //Module for handling the options provided by gpt3, including removing and inserting options into the document
 
+function showOption(index) {
+  currentOption.textContent = "Option " + (index + 1);
+}
+
+function CycleOptionsEventListeners(numOptions, currentIndex) {
+  const prevButton = document.getElementById("prevButton");
+  const nextButton = document.getElementById("nextButton");
+  const currentOption = document.getElementById("currentOption");
+
+  prevButton.addEventListener("click", () => {
+    currentIndex.value = (currentIndex.value - 1 + numOptions.value) % numOptions.value;
+    showOption(currentIndex.value);
+  });
+
+  nextButton.addEventListener("click", () => {
+    currentIndex.value = (currentIndex.value + 1) % numOptions.value;
+    showOption(currentIndex.value);
+  });
+
+  showOption(currentIndex.value);
+}
+
 async function basicSearchRemoval(context, inputRange, fullSearchterm) {
   //this function removes the fullSearchterm from the inputRange
   //since range.search doesn't work with search terms longer than 255 characters, we need to split the search term into multiple parts
@@ -320,4 +342,5 @@ module.exports = {
   resetOptions,
   updateOutputTextareas,
   removeLoadingAllClasses,
+  CycleOptionsEventListeners,
 };
