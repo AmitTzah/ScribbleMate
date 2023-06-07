@@ -118,7 +118,7 @@ Office.onReady((info) => {
     //Global variable to store whether the text is inserted or not
     let textInserted = { value: false };
 
-    //Global variable to store the current index of the inserted option
+    //Global variable to store the current index of the inserted option (starts at 0)
     let currentIndex = { value: 0 };
 
     //initialize the event listeners

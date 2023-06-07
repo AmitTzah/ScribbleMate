@@ -12,11 +12,37 @@ function CycleOptionsEventListeners(numOptions, currentIndex) {
   prevButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value - 1 + numOptions.value) % numOptions.value;
     showOption(currentIndex.value);
+
+    //remove is-focused class from all other textareas
+    for (let i = 0; i < numOptions.value; i++) {
+      if (i !== currentIndex.value) {
+        const textarea = document.getElementById("option " + (i + 1));
+        textarea.classList.remove("is-focused");
+      }
+    }
+
+    //get the textarea element of the current option
+    const textarea = document.getElementById("option " + (currentIndex.value + 1));
+    //add is-focused class to the textarea
+    textarea.classList.add("is-focused");
   });
 
   nextButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value + 1) % numOptions.value;
     showOption(currentIndex.value);
+
+    //remove is-focused class from all other textareas
+    for (let i = 0; i < numOptions.value; i++) {
+      if (i !== currentIndex.value) {
+        const textarea = document.getElementById("option " + (i + 1));
+        textarea.classList.remove("is-focused");
+      }
+    }
+
+    //get the textarea element of the current option
+    const textarea = document.getElementById("option " + (currentIndex.value + 1));
+    //add is-focused class to the textarea
+    textarea.classList.add("is-focused");
   });
 
   showOption(currentIndex.value);
