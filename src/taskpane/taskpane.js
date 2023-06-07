@@ -75,9 +75,6 @@ async function updateSelectedText(currentRange) {
 
 //Function to initialize all the event listeners
 function initializeEventListeners(api_key, currentRange, numOptions, textInserted, currentIndex) {
-  //initialize the event listeners for the options arrow buttons
-  CycleOptionsEventListeners(numOptions, currentIndex);
-
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
@@ -100,6 +97,9 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
 
   //fire the change event on the options-select element to initialize the number of options and thier event listeners
   document.getElementById("options-select").dispatchEvent(new Event("change"));
+
+  //initialize the event listeners for the options arrow buttons
+  CycleOptionsEventListeners(numOptions, currentIndex, currentRange, textInserted);
 }
 
 Office.onReady((info) => {
@@ -115,8 +115,10 @@ Office.onReady((info) => {
 
     console.log("numOptions", numOptions);
 
-    //Global variable to store whether the text is inserted or not
-    let textInserted = { value: false };
+    //Global variable to store whether text is inserted or not
+    //If the text is inserted this will be set to the index of the inserted option
+    //If the text is not inserted this will be set to -1
+    let textInserted = { value: -1 };
 
     //Global variable to store the current index of the inserted option (starts at 0)
     let currentIndex = { value: 0 };

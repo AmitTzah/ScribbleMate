@@ -1,7 +1,21 @@
 //Module for handling the options provided by gpt3, including removing and inserting options into the document
 
-function showOption(index) {
-  currentOption.textContent = "Option " + (index + 1);
+function showOption(index, currentRange, textInserted) {
+  if (textInserted.value !== -1) {
+    //text has been inserted into the document, we need to remove it
+    previousOption = document.getElementById("option " + (textInserted.value + 1));
+    removeOption(currentRange, previousOption);
+  }
+
+  //Update the text of the carousel element
+  const carouselOption = document.getElementById("carousel-option");
+  carouselOption.textContent = "Option " + (index + 1);
+
+  const currentOption = document.getElementById("option " + (index + 1));
+
+  insertOption(currentRange, currentOption);
+
+  textInserted.value = index;
 }
 
 function addFocusToCurrentOption(currentIndex) {
@@ -16,7 +30,7 @@ function removeFocusFromAllOptions(numOptions) {
   }
 }
 
-function CycleOptionsEventListeners(numOptions, currentIndex) {
+function CycleOptionsEventListeners(numOptions, currentIndex, currentRange, textInserted) {
   //add event listeners to the prev and next buttons
 
   const prevButton = document.getElementById("prevButton");
@@ -24,19 +38,19 @@ function CycleOptionsEventListeners(numOptions, currentIndex) {
 
   prevButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value - 1 + numOptions.value) % numOptions.value;
-    showOption(currentIndex.value);
+    showOption(currentIndex.value, currentRange, textInserted);
     removeFocusFromAllOptions(numOptions.value);
     addFocusToCurrentOption(currentIndex.value);
   });
 
   nextButton.addEventListener("click", () => {
     currentIndex.value = (currentIndex.value + 1) % numOptions.value;
-    showOption(currentIndex.value);
+    showOption(currentIndex.value, currentRange, textInserted);
     removeFocusFromAllOptions(numOptions.value);
     addFocusToCurrentOption(currentIndex.value);
   });
 
-  showOption(currentIndex.value);
+  showOption(currentIndex.value, currentRange, textInserted);
 }
 
 async function basicSearchRemoval(context, inputRange, fullSearchterm) {
