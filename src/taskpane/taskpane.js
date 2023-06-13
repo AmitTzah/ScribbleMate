@@ -96,7 +96,7 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
   document.getElementById("options-select").addEventListener("change", function () {
-    optionsSelect(numOptions, currentRange, textInserted);
+    optionsSelect(numOptions);
   });
 
   //fire the change event on the options-select element to initialize the number of options and thier event listeners

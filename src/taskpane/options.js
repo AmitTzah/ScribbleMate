@@ -13,8 +13,6 @@ function showOption(index, currentRange, textInserted) {
 
   const currentOption = document.getElementById("option " + (index + 1));
 
-  console.log("currentOption", currentOption.value);
-
   insertOption(currentRange, currentOption);
 
   textInserted.value = index;
@@ -89,22 +87,6 @@ async function removeSearchResult(context, inputRange, searchTerm) {
   }
 }
 
-//Function for hover over options
-function hoverOverOption(currentRange, event, textInserted) {
-  //get the option that was hovered over
-  const option = event.target;
-
-  if (textInserted.value === true) {
-    return;
-  }
-
-  if (event.type === "mouseenter") {
-    return insertOption(currentRange, option);
-  } else if (event.type === "mouseleave") {
-    return removeOption(currentRange, option);
-  }
-}
-
 function removeOption(currentRange, option) {
   //check if option.value is empty
   if (option.value === "") {
@@ -172,79 +154,12 @@ function createSubtitle(i) {
   return subtitle;
 }
 
-function createInsertButton(i) {
-  const insert_button = document.createElement("button");
-  insert_button.id = `insert-option-${i + 1}`;
-  insert_button.className = "button is-info is-small";
-  insert_button.innerText = "Insert";
-  return insert_button;
-}
-
-function createRemoveButton(i) {
-  const remove_button = document.createElement("button");
-  remove_button.id = `remove-option-${i + 1}`;
-  remove_button.className = "button is-info is-small";
-  remove_button.innerText = "Remove";
-  return remove_button;
-}
-
-function createNav(insert_button, remove_button) {
-  const nav = document.createElement("nav");
-  nav.className = "level is-mobile mt-4";
-  const level_left = document.createElement("div");
-  level_left.className = "level-left";
-  const level_item_remove = document.createElement("div");
-  level_item_remove.className = "level-item has-text-centered";
-  const level_item_insert = document.createElement("div");
-  level_item_insert.className = "level-item has-text-centered";
-  level_item_insert.appendChild(insert_button);
-  level_item_remove.appendChild(remove_button);
-  level_left.appendChild(level_item_insert);
-  level_left.appendChild(level_item_remove);
-  nav.appendChild(level_left);
-  return nav;
-}
-
-function handleInsertButtonClick(i, numOptions, currentRange, textInserted) {
-  const option = document.getElementById(`option ${i + 1}`);
-  insertOption(currentRange, option);
-
-  if (option.value !== "") {
-    textInserted.value = true;
-    //show remove button
-    remove_button = document.getElementById(`remove-option-${i + 1}`);
-    remove_button.style.display = "inline-block";
-
-    //grey out all other insert buttons
-    for (let j = 0; j < numOptions.value; j++) {
-      const insert_button = document.getElementById(`insert-option-${j + 1}`);
-      insert_button.disabled = true;
-    }
-  }
-}
-
-function handleRemoveButtonClick(i, numOptions, currentRange, textInserted) {
-  const option = document.getElementById(`option ${i + 1}`);
-  removeOption(currentRange, option);
-  textInserted.value = false;
-
-  //hide remove button
-  remove_button = document.getElementById(`remove-option-${i + 1}`);
-  remove_button.style.display = "none";
-
-  //ungrey out all the other insert buttons
-  for (let j = 0; j < numOptions.value; j++) {
-    const insert_button = document.getElementById(`insert-option-${j + 1}`);
-    insert_button.disabled = false;
-  }
-}
-
-function optionsSelect(numOptions, currentRange, textInserted) {
+function optionsSelect(numOptions) {
   //this function is called when the number of options is changed (via the select element) and when the page is loaded
   //It updates the generations div to have the correct number of textareas and buttons, and sets up the event listeners for the buttons and textareas
   updateNumOptions(numOptions);
   removeExcessOptions(numOptions);
-  createMissingOptions(numOptions, currentRange, textInserted);
+  createMissingOptions(numOptions);
 }
 
 function updateNumOptions(numOptions) {
@@ -254,51 +169,23 @@ function updateNumOptions(numOptions) {
 
 function removeExcessOptions(numOptions) {
   const generations = document.getElementById("generations");
-  while (generations.childElementCount > 3 * numOptions.value + 2) {
+  while (generations.childElementCount > 2 * numOptions.value + 2) {
     generations.removeChild(generations.lastChild);
   }
 }
 
-function createMissingOptions(numOptions, currentRange, textInserted) {
+function createMissingOptions(numOptions) {
   for (let i = 0; i < numOptions.value; i++) {
     const optionId = `option ${i + 1}`;
     if (!document.getElementById(optionId)) {
       const textarea = createTextarea(i);
       const control = createControl(textarea);
       const subtitle = createSubtitle(i);
-      const insert_button = createInsertButton(i);
-      const remove_button = createRemoveButton(i);
-
-      setupButtonListeners(i, numOptions, currentRange, textInserted, insert_button, remove_button);
-      setupOptionHoverHandlers(currentRange, textInserted, textarea);
-
-      const nav = createNav(insert_button, remove_button);
-      remove_button.style.display = "none";
 
       const generations = document.getElementById("generations");
-      appendElements(generations, [subtitle, control, nav]);
+      appendElements(generations, [subtitle, control]);
     }
   }
-}
-
-function setupButtonListeners(optionIndex, numOptions, currentRange, textInserted, insert_button, remove_button) {
-  insert_button.addEventListener("click", function () {
-    handleInsertButtonClick(optionIndex, numOptions, currentRange, textInserted);
-  });
-
-  remove_button.addEventListener("click", function () {
-    handleRemoveButtonClick(optionIndex, numOptions, currentRange, textInserted);
-  });
-}
-
-function setupOptionHoverHandlers(currentRange, textInserted, textarea) {
-  textarea.addEventListener("mouseenter", function (event) {
-    hoverOverOption(currentRange, event, textInserted);
-  });
-
-  textarea.addEventListener("mouseleave", function (event) {
-    hoverOverOption(currentRange, event, textInserted);
-  });
 }
 
 function appendElements(parent, elements) {
@@ -321,20 +208,8 @@ function resetOptions(numOptions, textInserted, currentIndex) {
   textInserted.value = -1;
   currentIndex.value = -1;
   for (let i = 1; i <= numOptions.value; i++) {
-    hideRemoveButton(i);
-    enableInsertButton(i);
     clearTextarea(i);
   }
-}
-
-function hideRemoveButton(optionIndex) {
-  const removeButton = document.getElementById(`remove-option-${optionIndex}`);
-  removeButton.style.display = "none";
-}
-
-function enableInsertButton(optionIndex) {
-  const insertButton = document.getElementById(`insert-option-${optionIndex}`);
-  insertButton.disabled = false;
 }
 
 function clearTextarea(optionIndex) {
