@@ -244,6 +244,18 @@ function removeLoadingClasses(optionIndex) {
   parentDiv.classList.remove("is-large");
 }
 
+function removeOptionEventListener(textInserted, currentRange) {
+  //if inserttext.value is smaller than 1, then there is no option to remove
+  if (textInserted.value +1 < 1) {
+    return;
+  }
+
+  option = document.getElementById(`option ${textInserted.value + 1}`);
+
+  console.log("insertText.value: " + textInserted.value);
+  removeOption(currentRange, option);
+}
+
 module.exports = {
   optionsSelect,
   setLoadingAllOptions,
@@ -251,4 +263,5 @@ module.exports = {
   updateOutputTextareas,
   removeLoadingAllClasses,
   CycleOptionsEventListeners,
+  removeOptionEventListener,
 };

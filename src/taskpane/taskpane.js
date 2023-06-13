@@ -14,6 +14,7 @@ const {
   updateOutputTextareas,
   removeLoadingAllClasses,
   CycleOptionsEventListeners,
+  removeOptionEventListener,
 } = require("./options.js");
 
 const { validateAndSaveApiKey } = require("./login-screen.js");
@@ -104,6 +105,12 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
 
   //initialize the event listeners for the options arrow buttons
   CycleOptionsEventListeners(numOptions, currentIndex, currentRange, textInserted);
+
+  removeButton = document.getElementById(`remove-option-button`);
+  //initialize the event listener for the remove button
+  removeButton.addEventListener("click", function (event) {
+    removeOptionEventListener(textInserted, currentRange);
+  });
 }
 
 Office.onReady((info) => {
