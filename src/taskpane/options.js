@@ -176,9 +176,18 @@ function updateNumOptions(numOptions) {
 
 function removeAllOptions() {
   const generations = document.getElementById("generations");
-  //remove all generations.childElementCount
-  while (generations.childElementCount > 3) {
-    generations.removeChild(generations.lastChild);
+
+  //remove all generations.childElementCount other than the clear-option-button, generations-title,highlight-option-checkbox-wrapper options-carousel elements
+  for (let i = generations.childElementCount - 1; i >= 0; i--) {
+    const child = generations.children[i];
+    if (
+      child.id !== "clear-option-button" &&
+      child.id !== "generations-title" &&
+      child.id !== "highlight-option-checkbox-wrapper" &&
+      child.id !== "options-carousel"
+    ) {
+      child.remove();
+    }
   }
 }
 
@@ -191,14 +200,12 @@ function createMissingOptions(numOptions) {
       const subtitle = createSubtitle(i);
 
       const generations = document.getElementById("generations");
-      appendElements(generations, [subtitle, control]);
+      //get the clear-option-button element
+      const clearOptionButton = document.getElementById("clear-option-button");
+      //insert the new option before the clear-option-button
+      generations.insertBefore(control, clearOptionButton);
+      generations.insertBefore(subtitle, control);
     }
-  }
-}
-
-function appendElements(parent, elements) {
-  for (const element of elements) {
-    parent.appendChild(element);
   }
 }
 
@@ -306,7 +313,7 @@ async function HighlightSearchResult(context, inputRange, searchTerm, highlight)
   }
 }
 
-function HighlightOptionController(currentRange, option, highlight) {
+async function HighlightOptionController(currentRange, option, highlight) {
   //highlight is a boolean, true if we want to highlight the option, false if we want to remove the highlight
   //check if option.value is empty
   if (option.value === "") {
@@ -340,6 +347,16 @@ function highlightOptionEventListener(currentRange, currentIndex) {
   }
 }
 
+async function clearOptionsButtonEventListener(numOptions, currentIndex, currentRange) {
+  //if the current option is highlighted, then unhighlight it
+  if (currentIndex.value !== -1) {
+    const option = document.getElementById(`option ${currentIndex.value + 1}`);
+    await HighlightOptionController(currentRange, option, false);
+  }
+
+  resetOptions(numOptions, currentIndex);
+}
+
 module.exports = {
   optionsSelect,
   setLoadingAllOptions,
@@ -349,4 +366,5 @@ module.exports = {
   CycleOptionsEventListeners,
   removeOptionEventListener,
   highlightOptionEventListener,
+  clearOptionsButtonEventListener,
 };

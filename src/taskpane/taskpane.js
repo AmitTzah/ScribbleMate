@@ -16,6 +16,7 @@ const {
   CycleOptionsEventListeners,
   removeOptionEventListener,
   highlightOptionEventListener,
+  clearOptionsButtonEventListener,
 } = require("./options.js");
 
 const { validateAndSaveApiKey } = require("./login-screen.js");
@@ -116,6 +117,11 @@ function initializeEventListeners(api_key, currentRange, numOptions, currentInde
   //initialize the event listener for the highlight-option-checkbox
   document.getElementById("highlight-option-checkbox").addEventListener("change", function () {
     highlightOptionEventListener(currentRange, currentIndex);
+  });
+
+  //initialize the event listener for the clear-option-button
+  document.getElementById("clear-option-button").addEventListener("click", function () {
+    clearOptionsButtonEventListener(numOptions, currentIndex, currentRange);
   });
 }
 

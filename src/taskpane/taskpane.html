@@ -69,7 +69,7 @@
 
     <div id="main-screen" style="display: none" class="has-background-white-ter">
       <section id="selection-textbox" class="section pb-0">
-        <h1 class="title">Context input</h1>
+        <h1 class="title">Context Input</h1>
         <textarea
           id="inputTextArea"
           class="textarea is-large is-size-5"
@@ -97,9 +97,9 @@
       </section>
 
       <section id="generations" class="section mt-0">
-        <h2 class="title">Suggestions</h2>
+        <h2 class="title" id="generations-title">Suggestions</h2>
         <!-- Main container -->
-        <nav class="level is-mobile">
+        <nav class="level is-mobile" id="options-carousel">
           <!-- Left side -->
           <div class="level-left">
             <div class="level-item">
@@ -129,10 +129,12 @@
             <!-- Add other level-items here, if needed -->
           </div>
         </nav>
-        <label class="checkbox">
+        <label class="checkbox pb-4" id="highlight-option-checkbox-wrapper">
           <input type="checkbox" id="highlight-option-checkbox" />
           Highlight Option
         </label>
+
+        <button class="button is-info is-small mt-4" id="clear-option-button">Clear All</button>
       </section>
     </div>
   </body>
