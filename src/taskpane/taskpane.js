@@ -27,14 +27,14 @@ function removeTrailingNewline(text) {
   return text;
 }
 
-async function suggestText(api_key, numOptions, textInserted, event, currentIndex) {
+async function suggestText(api_key, numOptions, event, currentIndex) {
   // Add a loading icon to the suggest text button
   event.target.classList.add("is-loading");
 
   //add loading indicators to the textareas of all options
   setLoadingAllOptions(numOptions);
 
-  resetOptions(numOptions, textInserted, currentIndex);
+  resetOptions(numOptions, currentIndex);
 
   const selectedText = document.getElementById("inputTextArea").value;
 
@@ -79,7 +79,7 @@ async function updateSelectedText(currentRange) {
 }
 
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange, numOptions, textInserted, currentIndex) {
+function initializeEventListeners(api_key, currentRange, numOptions, currentIndex) {
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
@@ -92,7 +92,7 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function (event) {
-    suggestText(api_key, numOptions, textInserted, event, currentIndex);
+    suggestText(api_key, numOptions, event, currentIndex);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
@@ -104,12 +104,12 @@ function initializeEventListeners(api_key, currentRange, numOptions, textInserte
   document.getElementById("options-select").dispatchEvent(new Event("change"));
 
   //initialize the event listeners for the options arrow buttons
-  CycleOptionsEventListeners(numOptions, currentIndex, currentRange, textInserted);
+  CycleOptionsEventListeners(numOptions, currentIndex, currentRange);
 
   removeButton = document.getElementById(`remove-option-button`);
   //initialize the event listener for the remove button
   removeButton.addEventListener("click", function (event) {
-    removeOptionEventListener(textInserted, currentRange);
+    removeOptionEventListener(currentIndex, currentRange);
   });
 }
 
@@ -124,17 +124,11 @@ Office.onReady((info) => {
     //global variable to store the number of options
     let numOptions = { value: parseInt(document.getElementById("options-select").value) };
 
-    console.log("numOptions", numOptions);
-
-    //Global variable to store whether text is inserted or not
-    //If the text is inserted this will be set to the index of the inserted option
-    //If the text is not inserted this will be set to -1
-    let textInserted = { value: -1 };
-
     //Global variable to store the current index of the inserted option (starts at 0)
-    let currentIndex = { value: 0 };
+    //If no text is inserted this will be set to -1
+    let currentIndex = { value: -1 };
 
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange, numOptions, textInserted, currentIndex);
+    initializeEventListeners(api_key, currentRange, numOptions, currentIndex);
   }
 });
