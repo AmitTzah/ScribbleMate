@@ -171,7 +171,7 @@ function updateNumOptions(numOptions) {
 function removeAllOptions() {
   const generations = document.getElementById("generations");
   //remove all generations.childElementCount
-  while (generations.childElementCount > 2) {
+  while (generations.childElementCount > 3) {
     generations.removeChild(generations.lastChild);
   }
 }
@@ -256,6 +256,84 @@ function removeOptionEventListener(currentIndex, currentRange) {
   removeOption(currentRange, option);
 }
 
+async function basicSearchHighlight(context, inputRange, fullSearchterm, highlight) {
+  //this function Highlights the fullSearchterm in the inputRange
+  //since range.search doesn't work with search terms longer than 255 characters, we need to split the search term into multiple parts
+  //and Highlight each part individually
+  //This function assumes that inputRange indeed contains the fullSearchterm
+
+  let restOfSearchterm = fullSearchterm;
+
+  while (restOfSearchterm.length > 0) {
+    if (restOfSearchterm.length < 255) {
+      await HighlightSearchResult(context, inputRange, restOfSearchterm, highlight);
+      restOfSearchterm = "";
+    } else {
+      const firstPart = restOfSearchterm.slice(0, 255);
+      restOfSearchterm = restOfSearchterm.slice(255);
+      await HighlightSearchResult(context, inputRange, firstPart, highlight);
+    }
+  }
+}
+
+async function HighlightSearchResult(context, inputRange, searchTerm, highlight) {
+  //Highlight the last search result from the inputRange
+  //assuming the search term is not longer than 255 characters
+  const searchResults = inputRange.search(searchTerm);
+  searchResults.load("items");
+  await context.sync();
+
+  if (searchResults.items.length > 0) {
+    const lastSearchResult = searchResults.items[searchResults.items.length - 1];
+
+    //if highlight is true, highlight the last search result with yellow highlight
+
+    if (highlight) {
+      //Highlight the last search result with yellow highlight
+      lastSearchResult.font.highlightColor = "#FFFF00";
+    } else {
+      //remove any highlight from the last search result if there is any
+      lastSearchResult.font.highlightColor = null;
+    }
+
+    await context.sync();
+  }
+}
+
+function HighlightOptionController(currentRange, option, highlight) {
+  //highlight is a boolean, true if we want to highlight the option, false if we want to remove the highlight
+  //check if option.value is empty
+  if (option.value === "") {
+    return;
+  }
+
+  return Word.run(currentRange.range, async (context) => {
+    //get the range of the selected text
+
+    textToHighlight = option.value;
+    range = currentRange.range;
+    range.load();
+    await context.sync();
+    await basicSearchHighlight(context, range, textToHighlight, highlight);
+  });
+}
+
+function highlightOptionEventListener(currentRange, currentIndex) {
+  //if currentIndex is  -1 then return
+  if (currentIndex.value === -1) {
+    return;
+  }
+  const option = document.getElementById(`option ${currentIndex.value + 1}`);
+
+  //if the checkbox is checked then highlight the option
+  if (document.getElementById("highlight-option-checkbox").checked) {
+    HighlightOptionController(currentRange, option, true);
+  } else {
+    //if the checkbox is unchecked then unhighlight the option
+    HighlightOptionController(currentRange, option, false);
+  }
+}
+
 module.exports = {
   optionsSelect,
   setLoadingAllOptions,
@@ -264,4 +342,5 @@ module.exports = {
   removeLoadingAllClasses,
   CycleOptionsEventListeners,
   removeOptionEventListener,
+  highlightOptionEventListener,
 };

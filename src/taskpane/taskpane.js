@@ -15,6 +15,7 @@ const {
   removeLoadingAllClasses,
   CycleOptionsEventListeners,
   removeOptionEventListener,
+  highlightOptionEventListener,
 } = require("./options.js");
 
 const { validateAndSaveApiKey } = require("./login-screen.js");
@@ -110,6 +111,11 @@ function initializeEventListeners(api_key, currentRange, numOptions, currentInde
   //initialize the event listener for the remove button
   removeButton.addEventListener("click", function (event) {
     removeOptionEventListener(currentIndex, currentRange);
+  });
+
+  //initialize the event listener for the highlight-option-checkbox
+  document.getElementById("highlight-option-checkbox").addEventListener("change", function () {
+    highlightOptionEventListener(currentRange, currentIndex);
   });
 }
 
