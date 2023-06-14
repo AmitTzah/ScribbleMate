@@ -17,6 +17,12 @@ function showOption(index, currentRange, textInsertedIndex) {
   const currentOption = document.getElementById("option " + (index + 1));
 
   insertOption(currentRange, currentOption);
+
+  //check if highlight option is checked
+  const highlightOptionCheckbox = document.getElementById("highlight-option-checkbox");
+  if (highlightOptionCheckbox.checked) {
+    HighlightOptionController(currentRange, currentOption, true);
+  }
 }
 
 function addFocusToCurrentOption(currentIndex) {
