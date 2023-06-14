@@ -159,7 +159,7 @@ function optionsSelect(numOptions) {
   //this function is called when the number of options is changed (via the select element) and when the page is loaded
   //It updates the generations div to have the correct number of textareas and buttons, and sets up the event listeners for the buttons and textareas
   updateNumOptions(numOptions);
-  removeExcessOptions(numOptions);
+  removeAllOptions();
   createMissingOptions(numOptions);
 }
 
@@ -168,9 +168,10 @@ function updateNumOptions(numOptions) {
   numOptions.value = parseInt(optionsSelectElement.value);
 }
 
-function removeExcessOptions(numOptions) {
+function removeAllOptions() {
   const generations = document.getElementById("generations");
-  while (generations.childElementCount > 2 * numOptions.value + 2) {
+  //remove all generations.childElementCount
+  while (generations.childElementCount > 2) {
     generations.removeChild(generations.lastChild);
   }
 }
