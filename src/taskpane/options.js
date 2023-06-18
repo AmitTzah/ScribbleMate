@@ -44,6 +44,11 @@ function CycleOptionsEventListeners(numOptions, currentIndex, currentRange) {
   const nextButton = document.getElementById("nextButton");
 
   prevButton.addEventListener("click", () => {
+    //if currentRange is null, we can't insert text
+    if (currentRange.range === null) {
+      return;
+    }
+
     oldIndex = currentIndex.value;
     currentIndex.value = (currentIndex.value - 1 + numOptions.value) % numOptions.value;
     showOption(currentIndex.value, currentRange, oldIndex);
@@ -52,6 +57,11 @@ function CycleOptionsEventListeners(numOptions, currentIndex, currentRange) {
   });
 
   nextButton.addEventListener("click", () => {
+    //if currentRange is null, we can't insert text
+    if (currentRange.range === null) {
+      return;
+    }
+
     oldIndex = currentIndex.value;
     currentIndex.value = (currentIndex.value + 1) % numOptions.value;
     showOption(currentIndex.value, currentRange, oldIndex);
