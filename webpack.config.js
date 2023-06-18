@@ -76,6 +76,11 @@ module.exports = async (env, options) => {
               }
             },
           },
+
+          {
+            from: "src/taskpane/help.html", // path to the help.index file
+            to: "[name][ext]", // copy it to the output folder with the same name
+          },
         ],
       }),
       new HtmlWebpackPlugin({

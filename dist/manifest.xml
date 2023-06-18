@@ -8,7 +8,7 @@
   <Description DefaultValue="Unleash your creativity with our AI writing assistant,fine-tuned for fiction writers. Get context-aware suggestions for the next sentence to break through the barriers of writer's block."/>
   <IconUrl DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-64.png"/>
-  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+  <SupportUrl DefaultValue="https://amittzah.github.io/writing_wizard/help"/>
   <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
   </AppDomains>
