@@ -23,6 +23,7 @@ async function generateContinuations(
   max_tokens = 60
 ) {
   //this function generates n continuations of the prompt using the GPT-3 API
+  //returns an array of continuations
 
   const configuration = new Configuration({
     apiKey: api_key,
@@ -55,7 +56,7 @@ async function generateContinuations(
 
   const response = await openai.createChatCompletion(requestBody);
 
-  console.log("The response was: ");
+  console.log("The response was from GPT was: ");
   console.log(response);
 
   return getContinuationsContent(response, n);

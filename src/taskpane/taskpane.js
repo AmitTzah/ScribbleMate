@@ -42,16 +42,23 @@ async function suggestText(api_key, numOptions, event, currentIndex) {
 
   const cleanedText = removeTrailingNewline(selectedText);
 
-  const continuations = await generateContinuations(api_key.value, cleanedText, numOptions.value);
+  try {
+    const continuations = await generateContinuations(api_key.value, cleanedText, numOptions.value);
+    // Handle the successful response and continuations here
+    updateOutputTextareas(continuations, numOptions);
 
-  updateOutputTextareas(continuations, numOptions);
+    event.target.classList.remove("is-loading");
+    removeLoadingAllClasses(numOptions);
 
-  event.target.classList.remove("is-loading");
-  removeLoadingAllClasses(numOptions);
-
-  //fire the change event for the nextButton element
-  const nextButton = document.getElementById("nextButton");
-  nextButton.dispatchEvent(new Event("click"));
+    //fire the change event for the nextButton element
+    const nextButton = document.getElementById("nextButton");
+    nextButton.dispatchEvent(new Event("click"));
+  } catch (error) {
+    console.error("An error occurred:", error);
+    // Handle the error appropriately
+    event.target.classList.remove("is-loading");
+    removeLoadingAllClasses(numOptions);
+  }
 }
 
 // Function to update the inputTextArea with the selected text
