@@ -4,7 +4,7 @@ async function validateAndSaveApiKey(api_key) {
   api_key.value = document.getElementById("api-key").value;
   removeErrorIcon();
   removeCheckIcon();
-  removeErrorMessage();
+  removeErrorMessage("api-input-error-message");
   showLoadingState();
 
   const valid = await checkApiKey(api_key.value);
@@ -12,7 +12,7 @@ async function validateAndSaveApiKey(api_key) {
   if (!valid) {
     removeLoadingState();
     addErrorIcon();
-    addErrorMessage();
+    addErrorMessage("This API key is invalid", "api-input-field");
   } else {
     removeLoadingState();
     addCheckIcon();
@@ -34,8 +34,8 @@ function removeCheckIcon() {
   }
 }
 
-function removeErrorMessage() {
-  const error = document.getElementById("api-input-error-message");
+function removeErrorMessage(elementID) {
+  const error = document.getElementById(elementID);
   if (error) {
     error.remove();
   }
@@ -59,13 +59,14 @@ function addErrorIcon() {
   document.getElementById("api-key").insertAdjacentElement("afterend", icon);
 }
 
-function addErrorMessage() {
+function addErrorMessage(message, elementID) {
+  //this function takes in a message and an elementID and adds the message as an error message to the element with the given ID
   const error = document.createElement("p");
   error.id = "api-input-error-message";
   error.className = "help is-danger";
-  error.innerText = "This API key is invalid";
+  error.innerText = message;
 
-  document.getElementById("api-input-field").insertAdjacentElement("afterend", error);
+  document.getElementById(elementID).insertAdjacentElement("afterend", error);
 }
 
 function addCheckIcon() {
@@ -85,4 +86,6 @@ function showMainScreen() {
 
 module.exports = {
   validateAndSaveApiKey,
+  addErrorMessage,
+  removeErrorMessage,
 };

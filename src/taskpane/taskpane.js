@@ -19,7 +19,7 @@ const {
   clearOptionsButtonEventListener,
 } = require("./options.js");
 
-const { validateAndSaveApiKey } = require("./login-screen.js");
+const { validateAndSaveApiKey, addErrorMessage, removeErrorMessage } = require("./login-screen.js");
 
 function removeTrailingNewline(text) {
   const lastChar = text[text.length - 1];
@@ -41,6 +41,7 @@ async function suggestText(api_key, numOptions, event, currentIndex) {
   const selectedText = document.getElementById("inputTextArea").value;
 
   const cleanedText = removeTrailingNewline(selectedText);
+  removeErrorMessage("api-input-error-message");
 
   try {
     const continuations = await generateContinuations(api_key.value, cleanedText, numOptions.value);
@@ -58,6 +59,9 @@ async function suggestText(api_key, numOptions, event, currentIndex) {
     // Handle the error appropriately
     event.target.classList.remove("is-loading");
     removeLoadingAllClasses(numOptions);
+
+    //add error message to the suggest text button
+    addErrorMessage(error, "suggest-text-nav");
   }
 }
 
