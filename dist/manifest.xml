@@ -4,11 +4,11 @@
   <Version>1.0.0.0</Version>
   <ProviderName>ProseAi</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Writing Wizard"/>
+  <DisplayName DefaultValue="ScribbleMate"/>
   <Description DefaultValue="Unleash your creativity with our AI writing assistant,fine-tuned for fiction writers. Get context-aware suggestions for the next sentence to break through the barriers of writer's block."/>
-  <IconUrl DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-64.png"/>
-  <SupportUrl DefaultValue="https://amittzah.github.io/writing_wizard/help"/>
+  <IconUrl DefaultValue="https://amittzah.github.io/ScribbleMate/assets/logo-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://amittzah.github.io/ScribbleMate/assets/logo-64.png"/>
+  <SupportUrl DefaultValue="https://amittzah.github.io/ScribbleMate/help"/>
   <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
   </AppDomains>
@@ -16,7 +16,7 @@
     <Host Name="Document"/>
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://amittzah.github.io/writing_wizard/taskpane.html"/>
+    <SourceLocation DefaultValue="https://amittzah.github.io/ScribbleMate/taskpane.html"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -62,23 +62,23 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://amittzah.github.io/writing_wizard/assets/logo-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://amittzah.github.io/ScribbleMate/assets/logo-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://amittzah.github.io/ScribbleMate/assets/logo-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://amittzah.github.io/ScribbleMate/assets/logo-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://amittzah.github.io/writing_wizard/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://amittzah.github.io/writing_wizard/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://amittzah.github.io/ScribbleMate/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://amittzah.github.io/ScribbleMate/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with Writing Wizard"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with ScribbleMate"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Writing Wizard"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="ScribbleMate"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Welcome to Writing Wizard! This add-in enhances your writing experience by providing AI-generated text suggestions. To get started, select a portion of your text and click the 'Suggest' button on the Writing Wizard tab."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to open Writing Wizard"/>
+        <bt:String id="GetStarted.Description" DefaultValue="Welcome to ScribbleMate! This add-in enhances your writing experience by providing AI-generated text suggestions. To get started, select a portion of your text and click the 'Suggest' button on the ScribbleMate tab."/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to open ScribbleMate"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
