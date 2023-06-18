@@ -16,8 +16,8 @@ async function generateContinuations(
   n = 5,
   temperature = 0.8,
   top_p = 1,
-  presence_penalty = 0.5,
-  frequency_penalty = 0.5,
+  presence_penalty = 0.6,
+  frequency_penalty = 0.6,
   stop = ["\n"],
   model = "gpt-3.5-turbo",
   max_tokens = 60

@@ -63,8 +63,9 @@ async function updateSelectedText(currentRange) {
     await context.sync();
 
     const selectedText = selection.text;
-    // if the selected text is empty then do nothing
-    if (selectedText === "") {
+    // if the selected text is empty or a newline character or spaces, do nothing
+    //use trim to remove the whitespace characters
+    if (selectedText.trim() === "") {
       return;
     }
 
