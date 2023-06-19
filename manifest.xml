@@ -5,7 +5,7 @@
   <ProviderName>ProseAi</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="ScribbleMate"/>
-  <Description DefaultValue="Unleash your creativity with our AI writing assistant,fine-tuned for fiction writers. Get context-aware suggestions for the next sentence to break through the barriers of writer's block."/>
+  <Description DefaultValue="Unleash your creativity with our AI writing assistant, designed specifically for fiction writers. Our add-in provides context-aware suggestions that seamlessly complement your existing ideas, ensuring your writing stays focused and on track."/>
   <IconUrl DefaultValue="https://localhost:3000/assets/logo-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/logo-64.png"/>
   <SupportUrl DefaultValue="https://amittzah.github.io/ScribbleMate/help"/>
