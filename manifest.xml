@@ -80,7 +80,7 @@
         <bt:String id="TaskpaneButton.Label" DefaultValue="ScribbleMate"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Welcome to ScribbleMate! This add-in enhances your writing experience by providing AI-generated text suggestions. To get started, select a portion of your text and click the 'Suggest' button on the ScribbleMate tab."/>
+        <bt:String id="GetStarted.Description" DefaultValue="Welcome to ScribbleMate! To get started, launch the add-in and enter your OpenAI API key. Then, select the text where you'd like to receive completion suggestions and click the 'Suggest' button on the ScribbleMate taskpane."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to open ScribbleMate"/>
       </bt:LongStrings>
     </Resources>
