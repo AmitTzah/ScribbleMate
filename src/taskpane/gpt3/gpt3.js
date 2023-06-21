@@ -18,7 +18,7 @@ async function generateContinuations(
   top_p = 1,
   presence_penalty = 0.6,
   frequency_penalty = 0.6,
-  stop = ["\n"],
+  stop = ["\n", "."],
   model = "gpt-3.5-turbo",
   max_tokens = 60
 ) {
@@ -45,7 +45,7 @@ async function generateContinuations(
       {
         role: "system",
         content:
-          "You are an AI writing assistant for a novelist. Your goal is to use creative and descriptive language to complete the provided text without introducing new plot points or dialogue. Your writing should be sophisticated and adult-oriented, dealing with mature topics and avoiding cliches. Your responses should enhance the writer's original vision, providing vivid, concrete details of the setting and characters in the style of J.K. Rowling. Ensure that your responses remain within the same paragraph as the provided text, and avoid introducing new characters or events that are not directly related to the provided idea. Stop generating after two sentences.",
+          "You are an AI writing assistant for a novelist. Your goal is to use creative and descriptive language to complete the provided text without introducing new plot points or dialogue. Your writing should be sophisticated and adult-oriented, dealing with mature topics and avoiding cliches. Your responses should enhance the writer's original vision, providing vivid, concrete details of the setting and characters in the style of J.K. Rowling. Ensure that your responses remain within the same paragraph as the provided text, and avoid introducing new characters or events that are not directly related to the provided idea.",
       },
       {
         role: "user",
