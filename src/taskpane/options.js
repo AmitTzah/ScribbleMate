@@ -121,6 +121,41 @@ function removeOption(currentRange, option) {
   });
 }
 
+async function removeTrailingWhitespace(context, range) {
+  //Note that this function, while fast, might leave one trailing whitespace character (Api limitation)
+
+  const whitespaceChars = [" ", "\t", "\n", "\r"]; // List of whitespace characters to remove
+
+  // Split the range into child ranges using whitespace characters as delimiters
+  const childRanges = range.split(whitespaceChars, true, false, false);
+  childRanges.load("text");
+  await context.sync();
+
+  let trailingWhitespaceFound = false;
+
+  // Iterate through the child ranges to check for trailing whitespace
+  for (let i = childRanges.items.length - 1; i >= 0; i--) {
+    const childRange = childRanges.items[i];
+    const text = childRange.text;
+
+    // If the text is empty or contains only whitespace characters, it is trailing whitespace
+    if (text.trim() === "") {
+      console.log("removing trailing whitespace: " + JSON.stringify(text));
+      childRange.delete();
+      trailingWhitespaceFound = true;
+    } else {
+      // If the range contains non-whitespace characters, we can stop the iteration
+      console.log("non-whitespace text found: " + JSON.stringify(text));
+      break;
+    }
+  }
+
+  if (trailingWhitespaceFound) {
+    await context.sync();
+    console.log("synced");
+  }
+}
+
 function insertOption(currentRange, option) {
   //check if option.value is empty
   if (option.value === "") {
@@ -134,13 +169,29 @@ function insertOption(currentRange, option) {
     range.load();
     await context.sync();
 
-    const trimmedText = range.text.trimEnd();
-    range.insertText(trimmedText, "Replace");
+    //remove trailing whitespace from the range, except maybe for one space (API limitation)
+    await removeTrailingWhitespace(context, range);
 
-    //use the range property of the textarea to insert the option.value into the document
-    range.insertText(" " + option.value + "." + " ", Word.InsertLocation.end);
-    range.load();
-    await context.sync();
+    //check if the last character of the range is a space
+    //if it is, then we don't need to insert a space
+    //if it isn't, then we need to insert a space
+
+    let lastCharacter = range.text.charAt(range.text.length - 1);
+
+    if (lastCharacter === "\r") {
+      lastCharacter = range.text.charAt(range.text.length - 2);
+    }
+
+    if (lastCharacter !== " ") {
+      //use the range property of the textarea to insert the option.value into the document
+      range.insertText(" " + option.value + "." + " ", Word.InsertLocation.end);
+      range.load();
+      await context.sync();
+    } else {
+      range.insertText(option.value + "." + " ", Word.InsertLocation.end);
+      range.load();
+      await context.sync();
+    }
 
     //deselct the text
     //this makes the view jump to the inserted text
