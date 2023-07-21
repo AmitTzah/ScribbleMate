@@ -1,7 +1,7 @@
 # ScribbleMate
 
 It is recommended to use following VBA Word macros when working with this add-in. These Macros will allow you to select text quickly:
-
+```
 Sub SelectXParagraphsBackward1()
     Dim NumParagraphs As Integer
     NumParagraphs = 10 ' Change this number to the desired number of paragraphs to select backward from cursor position
@@ -17,8 +17,8 @@ Sub SelectXParagraphsBackward1()
     
     Application.ScreenUpdating = True ' Turn on screen updating
 End Sub
-
-
+```
+```
 Sub SelectXParagraphsBackward2()
     Dim NumParagraphs As Integer
     NumParagraphs = 10 ' Change this number to the desired number of paragraphs to select backward from cursor position
@@ -39,7 +39,8 @@ Sub SelectXParagraphsBackward2()
     
     Application.ScreenUpdating = True ' Turn on screen updating
 End Sub
-
+```
+```
 Sub SelectParagraphsBackwardUntilHeading()
     Dim rng As Range
     Set rng = Selection.Range.Duplicate
@@ -55,7 +56,9 @@ Sub SelectParagraphsBackwardUntilHeading()
 
     Application.ScreenUpdating = True ' Turn on screen updating
 End Sub
+```
 
+```
 Sub SelectParagraphsBackwardUntilSceneBreak()
     Dim rng As Range
     Set rng = Selection.Range.Duplicate
@@ -79,5 +82,5 @@ Sub SelectParagraphsBackwardUntilSceneBreak()
 
     Application.ScreenUpdating = True ' Turn on screen updating
 End Sub
-
+```
 
