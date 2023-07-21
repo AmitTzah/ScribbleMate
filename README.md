@@ -1,6 +1,6 @@
 # ScribbleMate
 
-It is recommended to use following VBA Word macros when working with this add-in. These Macros will allow you to select text quickly:
+It is recommended to use the following VBA Word macros when working with this add-in. These Macros will allow you to select text quickly:
 ```
 Sub SelectXParagraphsBackward1()
     Dim NumParagraphs As Integer
