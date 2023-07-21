@@ -141,7 +141,7 @@ async function removeTrailingWhitespace(context, range) {
     // If the text is empty or contains only whitespace characters, it is trailing whitespace
     if (text.trim() === "") {
       //console.log("removing trailing whitespace: " + JSON.stringify(text));
-      childRange.delete();
+      childRange.insertText("", "Replace");
       trailingWhitespaceFound = true;
     } else {
       // If the range contains non-whitespace characters, we can stop the iteration
