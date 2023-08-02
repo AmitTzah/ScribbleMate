@@ -19,7 +19,7 @@ async function generateContinuations(
   presence_penalty = 0.6,
   frequency_penalty = 0.6,
   stop = ["\n", "."],
-  model = "gpt-3.5-turbo",
+  model = "gpt-3.5-turbo-0301",
   max_tokens = 60
 ) {
   //this function generates n continuations of the prompt using the GPT-3 API
