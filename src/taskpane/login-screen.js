@@ -12,7 +12,7 @@ async function validateAndSaveApiKey(api_key) {
   if (!valid) {
     removeLoadingState();
     addErrorIcon();
-    addErrorMessage("This API key is invalid", "api-input-field");
+    addErrorMessage("Invalid API key or incorrect model", "api-input-field");
   } else {
     removeLoadingState();
     addCheckIcon();

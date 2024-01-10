@@ -74,7 +74,7 @@ async function checkApiKey(api_Key) {
   const openai = new OpenAIApi(configuration);
   try {
     const response = await openai.createCompletion({
-      model: "ada",
+      model: "babbage-002",
       prompt: "t",
       temperature: 0,
       max_tokens: 1,
