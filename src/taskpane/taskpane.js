@@ -29,7 +29,7 @@ function removeTrailingNewline(text) {
   return text;
 }
 
-async function suggestText(api_key, numOptions, event, currentIndex) {
+async function suggestText(api_key, numOptions, event, currentIndex, selectedModel) {
   // Add a loading icon to the suggest text button
   event.target.classList.add("is-loading");
 
@@ -44,7 +44,18 @@ async function suggestText(api_key, numOptions, event, currentIndex) {
   removeErrorMessage("api-input-error-message");
 
   try {
-    const continuations = await generateContinuations(api_key.value, cleanedText, numOptions.value);
+    const continuations = await generateContinuations(
+      api_key.value,
+      cleanedText,
+      numOptions.value,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      selectedModel.value,
+      undefined
+    );
     // Handle the successful response and continuations here
     updateOutputTextareas(continuations, numOptions);
 
@@ -93,7 +104,7 @@ async function updateSelectedText(currentRange) {
 }
 
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange, numOptions, currentIndex) {
+function initializeEventListeners(api_key, currentRange, numOptions, currentIndex, selectedModel) {
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
     validateAndSaveApiKey(api_key);
@@ -106,12 +117,17 @@ function initializeEventListeners(api_key, currentRange, numOptions, currentInde
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function (event) {
-    suggestText(api_key, numOptions, event, currentIndex);
+    suggestText(api_key, numOptions, event, currentIndex, selectedModel);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
   document.getElementById("options-select").addEventListener("change", function () {
     optionsSelect(numOptions);
+  });
+
+  ////add an event listener for the model-select element to update the selectedModel
+  document.getElementById("model-select").addEventListener("change", function () {
+    selectedModel.value = document.getElementById("model-select").value;
   });
 
   //fire the change event on the options-select element to initialize the number of options and thier event listeners
@@ -148,11 +164,14 @@ Office.onReady((info) => {
     //global variable to store the number of options
     let numOptions = { value: parseInt(document.getElementById("options-select").value) };
 
+    //global variable to store the selected model name
+    let selectedModel = { value: document.getElementById("model-select").value };
+
     //Global variable to store the current index of the inserted option (starts at 0)
     //If no text is inserted this will be set to -1
     let currentIndex = { value: -1 };
 
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange, numOptions, currentIndex);
+    initializeEventListeners(api_key, currentRange, numOptions, currentIndex, selectedModel);
   }
 });
