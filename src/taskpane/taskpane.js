@@ -43,6 +43,19 @@ async function suggestText(api_key, numOptions, event, currentIndex, selectedMod
   const cleanedText = removeTrailingNewline(selectedText);
   removeErrorMessage("api-input-error-message");
 
+  const modelAndSystemMessage = selectedModel.value.split("System Message:");
+  const model = modelAndSystemMessage[0].replace("Model:", "").trim();
+  let systemMessage = modelAndSystemMessage[1].trim();
+
+  //print the model and system message
+  console.log("The prompted model is: " + model);
+  console.log("The system message is: " + systemMessage);
+
+  //if system message is "Default" then set it to an empty string
+  if (systemMessage === "Default") {
+    systemMessage = "";
+  }
+
   try {
     const continuations = await generateContinuations(
       api_key.value,
@@ -53,8 +66,9 @@ async function suggestText(api_key, numOptions, event, currentIndex, selectedMod
       undefined,
       undefined,
       undefined,
-      selectedModel.value,
-      undefined
+      model,
+      undefined,
+      systemMessage
     );
     // Handle the successful response and continuations here
     updateOutputTextareas(continuations, numOptions);
