@@ -1,11 +1,10 @@
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
 function getContinuationsContent(response, n) {
   //the array of continuations to be returned
-
   const continuations = [];
   for (let i = 0; i < n; i++) {
-    continuations.push(response.data.choices[i].message.content);
+    continuations.push(response.choices[i].message.content);
   }
   return continuations;
 }
@@ -19,21 +18,16 @@ async function generateContinuations(
   presence_penalty = 0.6,
   frequency_penalty = 0.6,
   stop = ["\n", "."],
-  model = "gpt-3.5-turbo-0301",
+  model = "gpt-4o",
   max_tokens = 60,
   system_message = ""
 ) {
-  //this function generates n continuations of the prompt using the GPT-3 API
-  //returns an array of continuations
-
-  const configuration = new Configuration({
+  const client = new OpenAI({
     apiKey: api_key,
+    dangerouslyAllowBrowser: true,
   });
-  delete configuration.baseOptions.headers["User-Agent"];
 
-  const openai = new OpenAIApi(configuration);
-
-  const requestBody = {
+  const response = await client.chat.completions.create({
     model: model,
     max_tokens: max_tokens,
     temperature: temperature,
@@ -52,10 +46,7 @@ async function generateContinuations(
         content: prompt,
       },
     ],
-  };
-
-  const response = await openai.createChatCompletion(requestBody);
-
+  });
   console.log("The response was from GPT was: ");
   console.log(response);
 
@@ -63,17 +54,13 @@ async function generateContinuations(
 }
 
 async function checkApiKey(api_Key) {
-  //this function checks if the API key is valid
-  //returns true if the API key is valid, false otherwise
-
-  const configuration = new Configuration({
+  const client = new OpenAI({
     apiKey: api_Key,
+    dangerouslyAllowBrowser: true,
   });
-  delete configuration.baseOptions.headers["User-Agent"];
 
-  const openai = new OpenAIApi(configuration);
   try {
-    const response = await openai.createCompletion({
+    const response = await client.completions.create({
       model: "babbage-002",
       prompt: "t",
       temperature: 0,
