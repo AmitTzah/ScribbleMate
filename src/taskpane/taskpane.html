@@ -27,13 +27,27 @@
       </section>
       <section class="section">
         <h1 class="title has-text-grey-dark">Credentials</h1>
-        <label class="label"> Enter your OpenAI API key to get started: </label>
+        <label class="label"> Enter your API keys to get started: </label>
 
-        <div id="api-input-field" class="field has-addons">
-          <div id="control-api-input" class="control has-icons-right">
-            <input id="api-key" class="input" type="text" placeholder="Enter your API key" />
+        <div class="field">
+          <label class="label">OpenAI API Key:</label>
+          <div id="openai-input-field" class="field has-addons">
+            <div id="control-api-input" class="control has-icons-right">
+              <input id="api-key" class="input" type="text" placeholder="Enter your OpenAI API key" />
+            </div>
           </div>
+        </div>
 
+        <div class="field">
+          <label class="label">Deepseek API Key:</label>
+          <div id="deepseek-input-field" class="field has-addons">
+            <div id="control-deepseek-input" class="control has-icons-right">
+              <input id="deepseek-key" class="input" type="text" placeholder="Enter your Deepseek API key" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
           <div class="control">
             <a class="button is-info" id="api-key-button"> Submit </a>
           </div>
@@ -100,18 +114,17 @@
             <div class="level-item">
               <div class="select is-small">
                 <select id="model-select">
-                  <option value="Model:gpt-4o-2024-11-20 System Message:Default">gpt-4o-2024-11-20</option>
-                  <option value="Model:gpt-4o-2024-08-06 System Message:Default">gpt-4o-2024-08-06</option>
-                  <option value="Model:gpt-4o-2024-05-13 System Message:Default">gpt-4o-2024-05-13</option>
-                  <option value="ft:gpt-4o-mini-2024-07-18:fictionai:fiction-writing-7:A0X18JAC System Message:Default">
+                  <option value="Model:gpt-4o-2024-11-20 API:openai System Message:Default">gpt-4o-2024-11-20</option>
+                  <option value="Model:gpt-4o-2024-08-06 API:openai System Message:Default">gpt-4o-2024-08-06</option>
+                  <option value="Model:gpt-4o-2024-05-13 API:openai System Message:Default">gpt-4o-2024-05-13</option>
+                  <option value="Model:ft:gpt-4o-mini-2024-07-18:fictionai:fiction-writing-7:A0X18JAC API:openai System Message:Default">
                     fiction-writing-7
                   </option>
-                  <option
-                    value="Model:ft:gpt-4o-mini-2024-07-18:fictionai:fiction-writing-4:9y3ECqcG System Message:Default"
-                  >
+                  <option value="Model:ft:gpt-4o-mini-2024-07-18:fictionai:fiction-writing-4:9y3ECqcG API:openai System Message:Default">
                     fiction-writing-4
                   </option>
-                  <option value="Model:gpt-4o-mini-2024-07-18 System Message:Default">gpt-4o-mini-2024-07-18</option>
+                  <option value="Model:gpt-4o-mini-2024-07-18 API:openai System Message:Default">gpt-4o-mini-2024-07-18</option>
+                  <option value="Model:deepseek-chat API:deepseek System Message:Default">deepseek-chat</option>
                 </select>
               </div>
             </div>

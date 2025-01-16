@@ -1,27 +1,42 @@
-const { checkApiKey } = require("./gpt3/gpt3.js");
+function validateAndSaveApiKey(api_keys) {
+  const openaiKey = document.getElementById("api-key").value.trim();
+  const deepseekKey = document.getElementById("deepseek-key").value.trim();
 
-async function validateAndSaveApiKey(api_key) {
-  api_key.value = document.getElementById("api-key").value;
-  removeErrorIcon();
+  removeErrorIcon("api-key");
+  removeErrorIcon("deepseek-key");
   removeCheckIcon();
-  removeErrorMessage("api-input-error-message");
-  showLoadingState();
+  removeErrorMessage("openai-input-field-error-message");
+  removeErrorMessage("deepseek-input-field-error-message");
 
-  const valid = await checkApiKey(api_key.value);
+  let hasError = false;
 
-  if (!valid) {
-    removeLoadingState();
-    addErrorIcon();
-    addErrorMessage("Invalid API key or incorrect model", "api-input-field");
-  } else {
-    removeLoadingState();
-    addCheckIcon();
-    showMainScreen();
+  if (!openaiKey) {
+    addErrorIcon("api-key");
+    addErrorMessage("OpenAI API key is required", "openai-input-field");
+    hasError = true;
   }
+
+  if (!deepseekKey) {
+    addErrorIcon("deepseek-key");
+    addErrorMessage("Deepseek API key is required", "deepseek-input-field");
+    hasError = true;
+  }
+
+  if (hasError) {
+    return false;
+  }
+
+  api_keys.openai = openaiKey;
+  api_keys.deepseek = deepseekKey;
+
+  addCheckIcon();
+  showMainScreen();
+  return true;
 }
 
-function removeErrorIcon() {
-  const icon = document.querySelector(".icon-alert-triangle");
+function removeErrorIcon(inputId) {
+  const inputField = document.getElementById(inputId);
+  const icon = inputField.parentElement.querySelector(".icon-alert-triangle");
   if (icon) {
     icon.remove();
   }
@@ -41,28 +56,24 @@ function removeErrorMessage(elementID) {
   }
 }
 
-function showLoadingState() {
-  document.getElementById("control-api-input").classList.add("is-loading");
-}
+function addErrorIcon(inputId) {
+  const inputField = document.getElementById(inputId);
+  const existingIcon = inputField.parentElement.querySelector(".icon-alert-triangle");
+  if (existingIcon) return;
 
-function removeLoadingState() {
-  document.getElementById("control-api-input").classList.remove("is-loading");
-}
-
-function addErrorIcon() {
   const icon = document.createElement("span");
   icon.className = "icon is-small is-right";
   const icon2 = document.createElement("span");
   icon2.className = "icon-alert-triangle";
   icon.appendChild(icon2);
 
-  document.getElementById("api-key").insertAdjacentElement("afterend", icon);
+  inputField.insertAdjacentElement("afterend", icon);
 }
 
 function addErrorMessage(message, elementID) {
   //this function takes in a message and an elementID and adds the message as an error message to the element with the given ID
   const error = document.createElement("p");
-  error.id = "api-input-error-message";
+  error.id = `${elementID}-error-message`;
   error.className = "help is-danger";
   error.innerText = message;
 

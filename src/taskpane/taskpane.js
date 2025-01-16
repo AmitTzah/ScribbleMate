@@ -29,7 +29,7 @@ function removeTrailingNewline(text) {
   return text;
 }
 
-async function suggestText(api_key, numOptions, event, currentIndex, selectedModel) {
+async function suggestText(api_keys, numOptions, event, currentIndex, selectedModel) {
   // Add a loading icon to the suggest text button
   event.target.classList.add("is-loading");
 
@@ -43,22 +43,44 @@ async function suggestText(api_key, numOptions, event, currentIndex, selectedMod
   const cleanedText = removeTrailingNewline(selectedText);
   removeErrorMessage("api-input-error-message");
 
-  const modelAndSystemMessage = selectedModel.value.split("System Message:");
-  const model = modelAndSystemMessage[0].replace("Model:", "").trim();
-  let systemMessage = modelAndSystemMessage[1].trim();
+  const regex = /Model:(\S+)\s+API:(\S+)\s+System Message:(.+)/;
+  const match = selectedModel.value.match(regex);
 
-  //print the model and system message
-  console.log("The prompted model is: " + model);
-  console.log("The system message is: " + systemMessage);
+  let model = "Unknown Model";
+  let apiType = "Unknown API";
+  let systemMessage = "Unknown System Message";
+
+  if (match) {
+    model = match[1];
+    apiType = match[2];
+    systemMessage = match[3].trim();
+  } else {
+    console.error("Could not parse selectedModel.value");
+    // Handle the error appropriately
+    event.target.classList.remove("is-loading");
+    removeLoadingAllClasses(numOptions);
+    addErrorMessage("Error parsing model selection", "suggest-text-nav");
+    return;
+  }
+
+  console.log("Model:", model);
+  console.log("API Type:", apiType);
+  console.log("System Message:", systemMessage);
+
+  apiKey = api_keys[apiType];
+
+  console.log("API Key:", apiKey);
 
   //if system message is "Default" then set it to an empty string
   if (systemMessage === "Default") {
     systemMessage = "";
   }
 
+  // Select appropriate API key based on model
+
   try {
     const continuations = await generateContinuations(
-      api_key.value,
+      apiKey,
       cleanedText,
       numOptions.value,
       undefined,
@@ -68,7 +90,8 @@ async function suggestText(api_key, numOptions, event, currentIndex, selectedMod
       undefined,
       model,
       undefined,
-      systemMessage
+      systemMessage,
+      apiType
     );
     // Handle the successful response and continuations here
     updateOutputTextareas(continuations, numOptions);
@@ -118,10 +141,10 @@ async function updateSelectedText(currentRange) {
 }
 
 //Function to initialize all the event listeners
-function initializeEventListeners(api_key, currentRange, numOptions, currentIndex, selectedModel) {
+function initializeEventListeners(api_keys, currentRange, numOptions, currentIndex, selectedModel) {
   //set an event listener for the api-button
   document.getElementById("api-key-button").addEventListener("click", function () {
-    validateAndSaveApiKey(api_key);
+    validateAndSaveApiKey(api_keys);
   });
 
   // Add event handler for text selection change
@@ -131,7 +154,7 @@ function initializeEventListeners(api_key, currentRange, numOptions, currentInde
 
   //add an event listener for the suggest-button
   document.getElementById("suggest-text-button").addEventListener("click", function (event) {
-    suggestText(api_key, numOptions, event, currentIndex, selectedModel);
+    suggestText(api_keys, numOptions, event, currentIndex, selectedModel);
   });
 
   //add an event listener for the options-select select element to update the number of options and thier event listeners
@@ -169,8 +192,11 @@ function initializeEventListeners(api_key, currentRange, numOptions, currentInde
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    //Global variable for the api key
-    let api_key = { value: "" };
+    // Global variables for API keys
+    let api_keys = {
+      openai: "",
+      deepseek: "",
+    };
 
     // Global variable to store the range object of the the input text.
     let currentRange = { range: null };
@@ -186,6 +212,6 @@ Office.onReady((info) => {
     let currentIndex = { value: -1 };
 
     //initialize the event listeners
-    initializeEventListeners(api_key, currentRange, numOptions, currentIndex, selectedModel);
+    initializeEventListeners(api_keys, currentRange, numOptions, currentIndex, selectedModel);
   }
 });

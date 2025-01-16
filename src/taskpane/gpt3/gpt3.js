@@ -1,7 +1,6 @@
 const OpenAI = require("openai");
 
 function getContinuationsContent(response, n) {
-  //the array of continuations to be returned
   const continuations = [];
   for (let i = 0; i < n; i++) {
     continuations.push(response.choices[i].message.content);
@@ -20,12 +19,20 @@ async function generateContinuations(
   stop = ["\n", "."],
   model = "gpt-4o",
   max_tokens = 60,
-  system_message = ""
+  system_message = "",
+  api_type = "openai"
 ) {
-  const client = new OpenAI({
+  const clientConfig = {
     apiKey: api_key,
-    dangerouslyAllowBrowser: true,
-  });
+    dangerouslyAllowBrowser: true
+  };
+
+  // Add baseURL for DeepSeek models
+  if (api_type === "deepseek") {
+    clientConfig.baseURL = 'https://api.deepseek.com';
+  }
+
+  const client = new OpenAI(clientConfig);
 
   const response = await client.chat.completions.create({
     model: model,
@@ -47,6 +54,7 @@ async function generateContinuations(
       },
     ],
   });
+  
   console.log("The response was from GPT was: ");
   console.log(response);
 
