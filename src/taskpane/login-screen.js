@@ -1,12 +1,12 @@
 function validateAndSaveApiKey(api_keys) {
   const openaiKey = document.getElementById("api-key").value.trim();
-  const deepseekKey = document.getElementById("deepseek-key").value.trim();
+  const geminiKey = document.getElementById("gemini-key").value.trim();
 
   removeErrorIcon("api-key");
-  removeErrorIcon("deepseek-key");
+  removeErrorIcon("gemini-key");
   removeCheckIcon();
   removeErrorMessage("openai-input-field-error-message");
-  removeErrorMessage("deepseek-input-field-error-message");
+  removeErrorMessage("gemini-input-field-error-message");
 
   let hasError = false;
 
@@ -16,9 +16,9 @@ function validateAndSaveApiKey(api_keys) {
     hasError = true;
   }
 
-  if (!deepseekKey) {
-    addErrorIcon("deepseek-key");
-    addErrorMessage("Deepseek API key is required", "deepseek-input-field");
+  if (!geminiKey) {
+    addErrorIcon("gemini-key");
+    addErrorMessage("gemini API key is required", "gemini-input-field");
     hasError = true;
   }
 
@@ -27,7 +27,7 @@ function validateAndSaveApiKey(api_keys) {
   }
 
   api_keys.openai = openaiKey;
-  api_keys.deepseek = deepseekKey;
+  api_keys.gemini = geminiKey;
 
   addCheckIcon();
   showMainScreen();

@@ -24,12 +24,12 @@ async function generateContinuations(
 ) {
   const clientConfig = {
     apiKey: api_key,
-    dangerouslyAllowBrowser: true
+    dangerouslyAllowBrowser: true,
   };
 
-  // Add baseURL for DeepSeek models
-  if (api_type === "deepseek") {
-    clientConfig.baseURL = 'https://api.deepseek.com';
+  // Add baseURL for Gemini models
+  if (api_type === "gemini") {
+    clientConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
   }
 
   const client = new OpenAI(clientConfig);
@@ -54,7 +54,7 @@ async function generateContinuations(
       },
     ],
   });
-  
+
   console.log("The response was from GPT was: ");
   console.log(response);
 

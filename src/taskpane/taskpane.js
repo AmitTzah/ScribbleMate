@@ -195,7 +195,7 @@ Office.onReady((info) => {
     // Global variables for API keys
     let api_keys = {
       openai: "",
-      deepseek: "",
+      gemini: "",
     };
 
     // Global variable to store the range object of the the input text.
