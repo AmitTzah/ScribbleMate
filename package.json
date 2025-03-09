@@ -26,6 +26,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
     "core-js": "^3.9.1",
     "openai": "^4.78.1",
     "regenerator-runtime": "^0.13.7"

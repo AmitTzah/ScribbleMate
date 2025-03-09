@@ -5,7 +5,8 @@
 
 /* global document, Office, Word */
 
-const { generateContinuations } = require("./gpt3/gpt3.js");
+const { generateContinuations: generateContinuationsOpenAI } = require("./openai/openai.js");
+const { generateContinuations: generateContinuationsGemini } = require("./gemini/gemini.js");
 
 const {
   optionsSelect,
@@ -79,20 +80,36 @@ async function suggestText(api_keys, numOptions, event, currentIndex, selectedMo
   // Select appropriate API key based on model
 
   try {
-    const continuations = await generateContinuations(
-      apiKey,
-      cleanedText,
-      numOptions.value,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      model,
-      undefined,
-      systemMessage,
-      apiType
-    );
+    let continuations;
+    if (apiType === "openai") {
+      continuations = await generateContinuationsOpenAI(
+        apiKey,
+        cleanedText,
+        numOptions.value,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        model,
+        undefined,
+        systemMessage
+      );
+    } else if (apiType === "gemini") {
+      continuations = await generateContinuationsGemini(
+        apiKey,
+        cleanedText,
+        numOptions.value,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        model,
+        undefined,
+        systemMessage
+      );
+    }
     // Handle the successful response and continuations here
     updateOutputTextareas(continuations, numOptions);
 

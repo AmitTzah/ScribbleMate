@@ -19,18 +19,12 @@ async function generateContinuations(
   stop = ["\n", "."],
   model = "gpt-4o",
   max_tokens = 60,
-  system_message = "",
-  api_type = "openai"
+  system_message = ""
 ) {
   const clientConfig = {
     apiKey: api_key,
     dangerouslyAllowBrowser: true,
   };
-
-  // Add baseURL for Gemini models
-  if (api_type === "gemini") {
-    clientConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
-  }
 
   const client = new OpenAI(clientConfig);
 
@@ -82,7 +76,4 @@ async function checkApiKey(api_Key) {
   }
 }
 
-module.exports = {
-  generateContinuations,
-  checkApiKey,
-};
+export { generateContinuations, checkApiKey };
